@@ -8,9 +8,6 @@ require("blocks/core");
 require("blocks/wall");
 require("blocks/environment");
 require("blocks/distribution");
-
-require("blocks/stackBridge");
-
 require("blocks/power");
 require("blocks/product");
 require("blocks/turret");

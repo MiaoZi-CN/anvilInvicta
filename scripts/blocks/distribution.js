@@ -78,18 +78,19 @@ global.FourDireFilter = function (name) {
       this.items.remove(items[i], 1);
      }
     }
-   }
-  });
+   },
+   //读取写入马上更新，歇逼了
+  });//还要转换类型?
  }
 }
 
 new global.FourDireFilter('super-router');
 
 const stackBridge = extend(BufferedItemBridge, "stackBridge", {
-  /*setStats() {
-  this.super$setStats();
-  this.stats.add(package, "yes")
- },*/
+ /*setStats() {
+ this.super$setStats();
+ this.stats.add(package, "yes")
+},*/
 });
 
 stackBridge.buildType = prov(() => {

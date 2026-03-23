@@ -39,15 +39,22 @@ const compositeWall = extend(Wall, "composite-wall", {
   this.stats.add(damageThreshold, "20")
  },
 })
+
 compositeWall.buildType = prov(() =>
  extend(Wall.WallBuild, compositeWall, {
   collision(bullet) {
+   if (bullet.damage < 20) {
+    bullet.damage = 0
+   }
+   if (bullet.splashDamage < 20) {
+    bullet.splashDamage = 0
+   }//没错，是分开算的，没想到吧？
    this.super$collision(bullet);
-   // bullet.remove()
-   bullet.remove()
+   return true
   }
- }))
+ }))//splashDamage
 exports.compositeWall = compositeWall;
+
 
 //carbon-fiber-reinforced-wall
 const carbonFiberReinforcedWall = new Wall("carbon-fiber-reinforced-wall");
