@@ -2,6 +2,6 @@ name: "ai"//内部名
 displayName: "Anvil Invicta"//显示名
 author: "TheParotiaCarolae's past"//作者
 description: "A mod about new planet(Anvil) and two new team(The Excellence Group. A.R.C)"//简介
-version: 1.0//模组版本
+version: 2//模组版本
 minGameVersion: 154.2//需求最低版本
 hideBrowser:false

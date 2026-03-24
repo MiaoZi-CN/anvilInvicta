@@ -1,4 +1,4 @@
-const alpha = new Item('alpha-crystal', Color.valueOf('#F77622FF'));
+const alpha = new Item('alpha-crystal', Color.valueOf('#E43B44FF'));
 exports.alpha = alpha;
 Object.assign(alpha, {
   cost: 3.5,
@@ -10,7 +10,7 @@ Object.assign(alpha, {
   alwaysUnlocked: true,
 });
 
-const zenium = new Item('zenium', Color.valueOf('#F77622FF'));
+const zenium = new Item('zenium', Color.valueOf('#F2A983FF'));
 exports.zenium = zenium;
 Object.assign(zenium, {
   cost: 3.5,
@@ -22,7 +22,7 @@ Object.assign(zenium, {
   alwaysUnlocked: true,
 });
 
-const xunetium = new Item('xunetium', Color.valueOf('#F77622FF'));
+const xunetium = new Item('xunetium', Color.valueOf('#F2E5C9FF'));
 exports.xunetium = xunetium;
 Object.assign(xunetium, {
   cost: 1.25,
@@ -34,7 +34,7 @@ Object.assign(xunetium, {
   alwaysUnlocked: true,
 });
 
-const vibrantAlloy = new Item('vibrant-alloy', Color.valueOf('#F77622FF'));
+const vibrantAlloy = new Item('vibrant-alloy', Color.valueOf('#DEEDFFFF'));
 exports.vibrantAlloy = vibrantAlloy;
 Object.assign(vibrantAlloy, {
   cost: 6,
@@ -46,7 +46,7 @@ Object.assign(vibrantAlloy, {
   alwaysUnlocked: true,
 });
 
-const glassSteel = new Item('glass-steel', Color.valueOf('#F77622FF'));
+const glassSteel = new Item('glass-steel', Color.valueOf('#AFEFF3FF'));
 exports.glassSteel = glassSteel;
 Object.assign(glassSteel, {
   cost: 4,
@@ -71,7 +71,7 @@ Object.assign(laindrium, {
 });
 const chip = new Item('chip', Color.valueOf('#6E7080FF'));
 exports.chip = chip;
-const viaonChip = new Item('viaon-chip', Color.valueOf('#6E7080FF'));
+const viaonChip = new Item('viaon-chip', Color.valueOf('#D99F6BFF'));
 exports.viaonChip = viaonChip;
 const wiredGlass = new Item('wired-glass', Color.valueOf('#FFFFFFFF'));
 exports.wiredGlass = wiredGlass;
