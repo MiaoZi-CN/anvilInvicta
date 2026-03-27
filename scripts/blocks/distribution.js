@@ -1,4 +1,4 @@
-//var package = Stat("package");
+var items = Stat("items");
 
 
 global.Filter = function (name) {
@@ -122,7 +122,9 @@ stackBridge.buildType = prov(() => {
    if (this.items.total() >= block.itemCapacity && other != null && other.items.total() < block.itemCapacity) {
     other.setAmount(this.items.total());
     other.items.add(lastItem, other.getAmount());
-    /*               Fx.itemTransfer.at(this.x, this.y, 2, lastItem.color, other);Fx.plasticburn.at(this);*/
+//    Fx.itemTransfer.at(this.x, this.y, 2, lastItem.color, other);
+    Fx.plasticburn.at(this)
+    Fx.plasticburn.at(other)
     this.items.clear();
    }
   },
@@ -134,16 +136,16 @@ stackBridge.buildType = prov(() => {
     this.dumpAccumulate();
    }
   },
-  /*       draw(){
-              this.super$draw();
-              var other = Vars.world.build(this.link);
-              if(other == null || this.getLastItem() == null || this.link == -1) return;
-              var angle = this.angleTo(other);
-              //Draw.rect(stackRegion, this.x, this.y, angle);
-              var size = Vars.itemSize * Mathf.lerp(Math.min(this.items.total() / block.itemCapacity, 1), 1, 0.4);
-              Drawf.shadow(Tmp.v1.x, Tmp.v1.y, size * 1.2);
-              Draw.rect(this.getLastItem().fullIcon, this.x, this.y, size, size, 0);
-          },*/
+  draw() {
+   this.super$draw();
+   var other = Vars.world.build(this.link);
+   if (other == null || this.getLastItem() == null || this.link == -1) return;
+   var angle = this.angleTo(other);
+   //Draw.rect(stackRegion, this.x, this.y, angle);
+   var size = Vars.itemSize * Mathf.lerp(Math.min(this.items.total() / block.itemCapacity, 1), 1, 0.4);
+   Drawf.shadow(Tmp.v1.x, Tmp.v1.y, size * 1.2);
+   Draw.rect(this.getLastItem().fullIcon, this.x, this.y, size, size, 0);
+  },
   acceptItem(source, item) {
    if (this == source && this.items.total() < block.itemCapacity) return true;
    var other = Vars.world.tile(this.link);
@@ -151,7 +153,7 @@ stackBridge.buildType = prov(() => {
   },
  }, stackBridge);
 });
-stackBridge.itemCapacity = 40;
+stackBridge.itemCapacity = 20;
 stackBridge.size = 1;
 stackBridge.range = 8;
 stackBridge.requirements = ItemStack.with(
@@ -166,25 +168,25 @@ stackBridge.category = Category.distribution;
 exports.stackBridge = stackBridge;
 
 //以下非机制类
-/*
-const T2Duct = new Duct("T2-duct");
-exports.T2Duct = T2Duct;
-Object.assign(T2Duct,{
-    health: 200,
-    armor: 2,
-    size: 1,
-    speed: 60 / 26,
-    itemCapacity: 1,
-    placeableLiquid: true,
-    buildVisibility: BuildVisibility.shown,
- category: Category.distribution,
- requirements: ItemStack.with(
-     Items.tungsten, 1,
-        Items.beryllium, 1,
-        Items.graphite, 1,
- )
-})
 
+const fluxRail = new Duct("flux-rail");
+exports.fluxRail = fluxRail;
+Object.assign(fluxRail, {
+ health: 200,
+ armor: 2,
+ size: 1,
+ speed: 60 / 30,
+ itemCapacity: 1,
+ placeableLiquid: true,
+ buildVisibility: BuildVisibility.shown,
+ category: Category.distribution,/*
+ requirements: ItemStack.with(
+  items.glassSteel, 1,
+  Items.graphite, 1,
+  Items.silicon, 1
+ )*/
+})
+/*
 const T2OverflowDuct = new OverflowDuct("T2-overflow-duct");
 exports.T2OverflowDuct = T2OverflowDuct;
 Object.assign(T2OverflowDuct,{

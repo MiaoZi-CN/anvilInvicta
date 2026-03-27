@@ -1,39 +1,34 @@
-/*
-const cartar = new UnitType("cartar");
-exports.cartar = cartar;
-Object.assign(cartar,{
-    ammoType: Items.lead,
+
+const sage = new UnitType("sage");
+exports.sage = sage;
+Object.assign(sage,{
     ammoCapacity: 80,
-    ammoResupplyAmount: 5,
-    
-    speed: 1.6,
-    accel: 0.22,
+    speed: 2,
+    accel: 0.4,
     drag: 0.017,
+    engineOffset: 10,
+    engineSize:2.5,
+    hitSize: 10,
+    health: 270,
+    armor: 1,
+    mineSpeed: 0,
+    mineTier: 0,
+    buildSpeed: 0,
+    rotateSpeed: 6,
+    itemCapacity: 20,
+    targetAir:true,
     flying: true,
-    turnCursor:false,转动光标
-    engineOffset: 10,发动机偏移
-    engineSize:2.5,发动机大小
-    hitSize: 10,被击中大小，你的大小
-    targetAir:true,目标航空
-    health: 270,血量
-    armor: 1,装甲
-    mineSpeed: 0,挖矿速度1=100%
-    mineTier: 0,挖矿等级，你可以挖什么矿
-    buildSpeed: 0,构建速度1=100%
-    rotateSpeed: 6,转速，旋转的速度
-    itemCapacity: 20,容量，字面意思
-    rotateShooting: true,旋转射击，是否旋转射击
     trailLength: 3,//拖尾长
-    trailColor:Color.valueOf("#FFC999FF"),//拖尾颜色
-    
-    constructor: () => new UnitEntity.create(),
-})
-cartar.abilities.add();
-cartar.engines.add(
+ //   trailColor:Color.valueOf("#FFC999FF"),//拖尾颜色
+ outlineColor:Color.valueOf('#25272BFF'),
+   constructor: () => new UnitEntity.create(),
+})/*
+sage.abilities.add();
+sage.engines.add(
     new UnitType.UnitEngine(3, -8, 2.5, -0.8),
 );
-cartar.weapons.add(
-    Object.assign(new PointDefenseWeapon("ai-cartar-point-defense"),{
+sage.weapons.add(
+    Object.assign(new PointDefenseWeapon(),{
         x: 0,
         y: -2,
         reload: 30,
@@ -47,7 +42,6 @@ cartar.weapons.add(
             hitEffect: Fx.pointHit,
             maxRange: 60,
             damage: 40,
-            ammoMultiplier: 1,
         })
     }),
     Object.assign(new Weapon(),{
@@ -70,7 +64,7 @@ cartar.weapons.add(
                 baseLength: 0,
                 lifetime: 20,
                 cone: 20,
-                line: true,
+                line: false,
                 colorFrom: Color.valueOf("#CBA3FFFF"),
                 colorTo: Color.valueOf("#CBA3FFFF"),
                 sizeFrom: 0.8,
@@ -86,11 +80,10 @@ cartar.weapons.add(
             sideLength:35,
             length:130,
             colors:[Color.valueOf("#C5A4E5FF"),Color.valueOf("#000000FF"),Color.valueOf("#000000FF")],//颜色
-            ammoMultiplier:2,//每个物品能够
         })
     })
-);
-
+);*/
+/*
 const legacy = new UnitType("legacy");
 exports.legacy = legacy;
 Object.assign(legacy,{

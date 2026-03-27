@@ -16,3 +16,15 @@ Object.assign(steam, {
   coolant: false,
   gas: true,
 });
+const neon = new Liquid('neon', Color.valueOf('#B60CFFFF'));
+exports.neon = neon;
+Object.assign(neon, {
+  viscosity: 0,
+  heatCapacity: 0,
+  temperature: 0,
+  flammability: 0,
+  capPuddles: false,
+  coolant: false,
+  gas: true,
+});
+
