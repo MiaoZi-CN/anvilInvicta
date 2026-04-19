@@ -23,7 +23,7 @@ const quartzite = new Floor("quartzite");
 Object.assign(quartzite, {
  speedMultiplier: 1.3,
  dragMultiplier: 1.1,
- variants: 3
+ variants: 4
 })
 
 const quartziteSand = new Floor("quartzite-sand");
@@ -34,11 +34,9 @@ Object.assign(quartziteSand, {
  itemDrop: Items.sand
 })//StaticWall
 
-const quartziteSandWall = new Floor("quartzite-sand-wall");
+const quartziteSandWall = new StaticWall("quartzite-sand-wall");
 Object.assign(quartziteSandWall, {
- speedMultiplier: 0.9,
- dragMultiplier: 0.9,
- variants: 3,
+ variants: 2,
 })
 
 
@@ -51,14 +49,9 @@ Object.assign(limeStone, {
 
 
 
-/*
-const blackTop0 = new Floor("blackTop");
-Object.assign(blackTop0,{
-    speedMultiplier:1.3,
-    dragMultiplier:1.3,
-    variants: 0
-})
 
+
+/*
 const blackTop1 = new Floor("blackTop-white-1");
 Object.assign(blackTop1,{
     speedMultiplier:1.3,

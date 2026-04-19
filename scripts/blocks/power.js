@@ -31,7 +31,7 @@ Object.assign(steamPressurizer, {
  ),
  powerProduction: 0.1,
  buildVisibility: BuildVisibility.shown,
- category: Category.crafting,
+ category: Category.power,
  requirements: ItemStack.with(
   Items.beryllium, 40,
   Items.graphite, 30,
@@ -58,7 +58,7 @@ Object.assign(turbineSet, {
   new DrawDefault()
  ),
  buildVisibility: BuildVisibility.shown,
- category: Category.crafting,
+ category: Category.power,
  requirements: ItemStack.with(
   Items.beryllium, 100,
   Items.graphite, 40,
@@ -88,7 +88,7 @@ Object.assign(boiler, {
   new DrawDefault()
  ),
  buildVisibility: BuildVisibility.shown,
- category: Category.crafting,
+ category: Category.power,
  requirements: ItemStack.with(
   Items.tungsten, 30,
   Items.beryllium, 30,
@@ -117,7 +117,7 @@ Object.assign(steamHeater, {
   new DrawHeatInput("-heat")
  ),
  buildVisibility: BuildVisibility.shown,
- category: Category.crafting,
+ category: Category.power,
  requirements: ItemStack.with(
   Items.tungsten, 30,
   Items.beryllium, 60,
@@ -127,34 +127,128 @@ Object.assign(steamHeater, {
 })
 steamHeater.consumeLiquid(fluids.steam, 0.3)
 
-const highEnergyCapacitor = new Battery("high-energy-capacitor");
-exports.highEnergyCapacitor = highEnergyCapacitor;
-Object.assign(highEnergyCapacitor, {
- health: 1000,
- size: 1,
- update: true,
- buildVisibility: BuildVisibility.shown,
- category: Category.crafting,
- requirements: ItemStack.with(
-  items.glassSteel, 5,
-  items.chip, 5,
-  Items.surgeAlloy, 5,
- )
-})
-highEnergyCapacitor.consumePowerBuffered(50000)
 
-highEnergyCapacitor.buildType = () =>
- extend(Battery.BatteryBuild, highEnergyCapacitor, {
-  updateTile() {
-   this.super$updateTile();
-   this.count = 0;//嗯嗯作用域大人
-   this.proximity.each((other) => {
-    if (other.block == this.block) {
-     this.count++;
+
+//光伏单元
+const photovoltaicModule = new SolarGenerator("photovoltaic-module");
+exports.photovoltaicModule = photovoltaicModule;
+Object.assign(photovoltaicModule, {
+ category: Category.power,
+ buildVisibility: BuildVisibility.shown,
+ requirements: ItemStack.with(
+  Items.thorium, 5,
+  Items.lead, 5,
+  Items.silicon, 5
+ ),
+ size: 1,
+ powerProduction: 0.5,
+ update: true
+})
+
+photovoltaicModule.buildType = () =>
+ extend(SolarGenerator.SolarGeneratorBuild, photovoltaicModule, {
+  draw() {
+   // this.super$draw();
+   let autotileRegions
+   if (!autotileRegions) {
+    autotileRegions = TileBitmask.load(photovoltaicModule.name + "-autotile"); // 贴图多了-autotile，这里也写吧，按理应该删掉-autotile
+   }//我受够了
+   const { x, y } = this;
+   let bits = 0;
+   for (let i = 0; i < 8; i++) {
+    let p = Geometry.d8[i];
+    let other = this.nearby(p.x, p.y);
+    if (other != null && other.block == this.block) {
+     bits |= (1 << i);
     }
-   });
+   }
+   let bit = TileBitmask.values[bits];
+   const region = autotileRegions[bit];
+   Draw.rect(region, x, y);
+   Draw.reset()
+   //  if(){
+   //  Draw.rect(Core.atlas.find("square"), x, this.y - 1);
+   //  Draw.reset()
+   //   }
   },
-  update() {
-  
-  }
  })
+
+//氰化高压釜 tetradCrackingEngine
+const tetradCrackingEngine = new ConsumeGenerator("tetrad-cracking-engine");
+exports.tetradCrackingEngine = tetradCrackingEngine;
+Object.assign(tetradCrackingEngine, {
+ powerProduction: 620 / 60,
+ hasLiquids: true,
+ size: 2,
+ generateEffect: Fx.generatespark,
+ generateEffectRange: 3.0,
+ // outputLiquid: new LiquidStack(Liquids.cyanogen, 1 / 120),
+ //outputItem: new ItemStack(Items.pyratite, 1),
+ canOverdrive: false,
+ ambientSound: Sounds.loopSmelter,
+ ambientSoundVolume: 0.06,
+ liquidCapacity: 30,
+ drawer: new DrawMulti(
+  new DrawRegion("-bottom"),
+  Object.assign(new DrawCells(), {
+   color: Color.valueOf("#FFFFFFFF"),
+   particleColorFrom: Color.valueOf("#FFFFFFFF"),
+   particleColorTo: Color.valueOf("#9CC5FFFF"),
+   particles: 65,
+   range: 4,
+  }),
+  Object.assign(new DrawLiquidTile(Liquids.water), {
+   alpha: 0.6,
+  }),
+  new DrawDefault(),
+ ),
+ category: Category.power,
+ buildVisibility: BuildVisibility.shown,
+ requirements: ItemStack.with(
+  Items.titanium, 60,
+  Items.copper, 20,
+  Items.lead, 15,
+  Items.silicon, 30,
+ ),
+})
+tetradCrackingEngine.consumeLiquid(Liquids.water, 12 / 60,)
+tetradCrackingEngine.consumeItem(Items.graphite, 2)
+
+const chemoRingEngine = new ImpactReactor("chemo-ring-engine");
+exports.chemoRingEngine = chemoRingEngine;
+Object.assign(chemoRingEngine, {
+ powerProduction: 42,
+ hasLiquids: true,
+ size: 3,
+ canOverdrive: false,
+ liquidCapacity: 60,
+ warmupSpeed: 0.01,
+ drawer: new DrawMulti(
+  new DrawRegion("-bottom"),
+  Object.assign(new DrawLiquidTile(Liquids.oil), {
+   //   alpha:0.6,
+  }),
+  Object.assign(new DrawPlasma(), {
+   plasma1: Color.valueOf("#8CFFFF"),
+   plasma2: Color.valueOf("#9CC5FFFF"),
+  }),
+  new DrawDefault(),
+ ),
+ category: Category.power,
+ buildVisibility: BuildVisibility.shown,
+ requirements: ItemStack.with(
+  Items.titanium, 250,
+  Items.copper, 200,
+  Items.metaglass, 155,
+  Items.silicon, 120,
+  Items.thorium, 40,
+ ),
+})
+chemoRingEngine.consumeLiquid(Liquids.oil, 0.7,)
+chemoRingEngine.consumePower(4)
+//chemoRingEngine.consumeItem(Items.graphite, 1)
+Events.on(EventType.ClientLoadEvent, () => {
+ if (Vars.mods.getMod("new-horizon") != null) {
+
+ }
+},)

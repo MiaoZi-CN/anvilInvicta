@@ -32,3 +32,37 @@ breaker.buildType = prov(() =>
     },
   })
 );
+//DirectionalForceProjector
+const 定向力墙投影 = extend(DirectionalForceProjector, "定向力墙投影", {});
+定向力墙投影.buildType = () => extend(DirectionalForceProjector.DirectionalForceProjectorBuild, 定向力墙投影, {
+n: 0,
+    updateTile(){
+    this.super$updateTile();
+    if(this.buildup >= 0){
+    this.buildup -= 1.5 //每帧回复速度
+    }
+    else(this.buildup = 0);
+    if(this.buildup >= this.block.shieldHealth){
+    this.broken = true;
+    this.buildup = 0;
+    this.n = 3900;   //完全恢复所需时间
+    };
+    if(this.n >= 1){
+    this.n -= 1;
+    this.broken = true;
+    }
+    else{this.broken = false};
+    },
+    write(write) {
+            this.super$write(write);
+            write.f(this.n);
+            write.f(this.buildup);
+            
+    },
+    read(read, revision) {
+            this.super$read(read, revision);
+            this.n = read.f();
+            this.buildup = read.f();
+    }
+});
+

@@ -13,7 +13,7 @@ global.Filter = function (name) {
   configurable: true
  });
  m.setupRequirements(
-  Category.production,
+  Category.distribution,
   BuildVisibility.shown,
   ItemStack.with(Items.copper, 1));
  return m;
@@ -86,6 +86,7 @@ global.FourDireFilter = function (name) {
 
 new global.FourDireFilter('super-router');
 
+
 const stackBridge = extend(BufferedItemBridge, "stackBridge", {
  /*setStats() {
  this.super$setStats();
@@ -122,7 +123,7 @@ stackBridge.buildType = prov(() => {
    if (this.items.total() >= block.itemCapacity && other != null && other.items.total() < block.itemCapacity) {
     other.setAmount(this.items.total());
     other.items.add(lastItem, other.getAmount());
-//    Fx.itemTransfer.at(this.x, this.y, 2, lastItem.color, other);
+    //    Fx.itemTransfer.at(this.x, this.y, 2, lastItem.color, other);
     Fx.plasticburn.at(this)
     Fx.plasticburn.at(other)
     this.items.clear();
@@ -167,43 +168,70 @@ stackBridge.category = Category.distribution;
 
 exports.stackBridge = stackBridge;
 
-//以下非机制类
 
-const fluxRail = new Duct("flux-rail");
-exports.fluxRail = fluxRail;
-Object.assign(fluxRail, {
+const fluxRail = extend(Duct, "flux-rail", {
  health: 200,
  armor: 2,
  size: 1,
  speed: 60 / 30,
  itemCapacity: 1,
  placeableLiquid: true,
+ update: true,
  buildVisibility: BuildVisibility.shown,
- category: Category.distribution,/*
- requirements: ItemStack.with(
-  items.glassSteel, 1,
-  Items.graphite, 1,
-  Items.silicon, 1
- )*/
-})
-/*
-const T2OverflowDuct = new OverflowDuct("T2-overflow-duct");
-exports.T2OverflowDuct = T2OverflowDuct;
-Object.assign(T2OverflowDuct,{
-    invert: false,
-    health: 100,
-    armor: 1,
-    speed: 60 / 26,
-    itemCapacity: 2,
-    suppressable: true,
-    squareSprite: false,
-    placeableLiquid: true,
-    buildVisibility: BuildVisibility.shown,
  category: Category.distribution,
  requirements: ItemStack.with(
-     Items.tungsten, 4,
-        Items.beryllium, 6,
-        Items.graphite, 6,
+  // items.glassSteel, 1,
+  Items.graphite, 1,
+  Items.silicon, 1
+ )
+})
+/*
+fluxRail.buildType = () =>
+ extend(Duct.DuctBuild, fluxRail, {
+  draw() {
+
+   if (this.rotation == 2 || this.rotation == 0) {//左和右
+    Draw.rect(Core.atlas.find("ai-flux-rail-x"), this.x, this.y);
+    Draw.reset()
+   } else {
+    Draw.rect(Core.atlas.find("ai-flux-rail-y"), this.x, this.y);
+    Draw.reset()
+   }
+   //  if (this.getLastItem() !== null) {
+   //   Draw.z(Layer.blockUnder + 0.1);
+   //   Draw.rect(this.getLastItem(), this.x, this.y, 32, 32);这里打算绘制物品来着
+   //  Draw.reset();
+   //  }
+   Draw.rect(Core.atlas.find("ai-flux-rail-top"), this.x, this.y, this.rotation * 90)
+   Draw.reset()
+  }
+ }),
+ exports.fluxRail = fluxRail;
+*/
+
+//以下非机制类
+/*
+const fluxRail = new Duct("flux-rail");
+exports.fluxRail = fluxRail;
+Object.assign(fluxRail, {
+
+ )
+})*/
+/*
+const metaglassConveyor = new Conveyor("metaglass-conveyor");
+exports.metaglassConveyor = metaglassConveyor;
+Object.assign(metaglassConveyor, {
+ health: 10,
+ itemCapacity: 3,
+ speed:1.384615385,
+ displayedSpeed: 18,
+ placeableLiquid: true,
+ buildVisibility: BuildVisibility.shown,
+ category: Category.distribution,
+ requirements: ItemStack.with(
+  Items.titanium, 1,
+  Items.metaglass, 1,
+  Items.graphite, 1,
  )
 })
 
@@ -243,16 +271,14 @@ Object.assign(ductJunction,{
  )
 })
 
-const T2DuctBridge = new DuctBridge("T2-duct-bridge");
+const T2DuctBridge = new BufferedItemBridge("T2-duct-bridge");
 exports.T2DuctBridge = T2DuctBridge;
 Object.assign(T2DuctBridge,{
     health: 420,
     size: 1,
-    hasPower: false,
-    underBullets: true,
     placeableLiquid: true,
     range: 6,
-    itemCapacity: 6,
+    itemCapacity: 4,
     buildVisibility: BuildVisibility.shown,
  category: Category.distribution,
  requirements: ItemStack.with(
@@ -276,7 +302,6 @@ Object.assign(T2ReinforcedConduit,{
  category: Category.liquid,
  requirements: ItemStack.with(
         Items.beryllium, 2,
-        Items.tungsten, 2,
  )
 })
  */

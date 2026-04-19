@@ -7,9 +7,9 @@ Object.assign(arouse, {
     flying: true,
 //    ammoType: new ItemAmmoType(Items.copper),
     ammoCapacity: 400,
-    speed: 5.2,
-    accel: 0.9,
-    drag:0.1,
+    speed: 6.2,
+    accel: 1.2,
+    drag:0.8,
     engineOffset: 6,
     engineSize: 2,
     lowAltitude: false,
@@ -53,20 +53,5 @@ Object.assign(prismCore, {
     Items.titanium, 400,
     items.chip, 200,
     Items.silicon, 600, 
-    )
-})
-
-const compartment = new StorageBlock("compartment");
-exports.compartment = compartment;
-Object.assign(compartment,{
-    itemCapacity:9500,
-    hasItems: true,
-	health: 3280,
-	size: 4,
-	buildVisibility: BuildVisibility.shown,
-    category: Category.effect,
-    requirements: ItemStack.with(
-        Items.thorium, 800,
-        Items.plastanium, 300,
     )
 })

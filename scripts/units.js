@@ -1,32 +1,26 @@
 
 const sage = new UnitType("sage");
 exports.sage = sage;
-Object.assign(sage,{
-    ammoCapacity: 80,
-    speed: 2,
-    accel: 0.4,
-    drag: 0.017,
-    engineOffset: 10,
-    engineSize:2.5,
-    hitSize: 10,
-    health: 270,
-    armor: 1,
-    mineSpeed: 0,
-    mineTier: 0,
-    buildSpeed: 0,
-    rotateSpeed: 6,
-    itemCapacity: 20,
-    targetAir:true,
-    flying: true,
-    trailLength: 3,//拖尾长
- //   trailColor:Color.valueOf("#FFC999FF"),//拖尾颜色
- outlineColor:Color.valueOf('#25272BFF'),
-   constructor: () => new UnitEntity.create(),
+Object.assign(sage, {
+ ammoCapacity: 80,
+ speed: 2,
+ accel: 0.4,
+ drag: 0.017,
+ engineOffset: 8,
+ engineSize: 2.5,
+ hitSize: 10,
+ health: 270,
+ armor: 1,
+ buildSpeed: 0,
+ rotateSpeed: 6,
+ itemCapacity: 20,
+ trailColor: Color.valueOf("#99BAFFFF"),
+ engineColor: Color.valueOf("#99BAFFFF"),
+ targetAir: true,
+ flying: true,
+ outlineColor: Color.valueOf('#25272BFF'),
+ constructor: () => new UnitEntity.create(),
 })/*
-sage.abilities.add();
-sage.engines.add(
-    new UnitType.UnitEngine(3, -8, 2.5, -0.8),
-);
 sage.weapons.add(
     Object.assign(new PointDefenseWeapon(),{
         x: 0,
@@ -105,35 +99,35 @@ Object.assign(legacy,{
 })
 legacy.abilities.add(
     Object.assign(new ShieldArcAbility(),{
-		radius: 26,
-		angle: 60,
-		regen: 1,
-		cooldown: 60 * 20,
-		max: 140,
-		width: 2,
-		drawArc:true,
-		whenShooting:false,
-	}),
-	Object.assign(new ShieldArcAbility(),{
-		radius: 26,
-		angle: 60,
-		regen: 1,
-		cooldown: 60 * 20,
-		max: 140,
-		width: 2,
-		drawArc:false,
-		whenShooting:false,
-	}),
-	Object.assign(new ShieldArcAbility(),{
-		radius: 26,
-		angle: -60,
-		regen: 1,
-		cooldown: 60 * 20,
-		max: 140,
-		width: 2,
-		drawArc:true,
-		whenShooting:false,
-	}),
+  radius: 26,
+  angle: 60,
+  regen: 1,
+  cooldown: 60 * 20,
+  max: 140,
+  width: 2,
+  drawArc:true,
+  whenShooting:false,
+ }),
+ Object.assign(new ShieldArcAbility(),{
+  radius: 26,
+  angle: 60,
+  regen: 1,
+  cooldown: 60 * 20,
+  max: 140,
+  width: 2,
+  drawArc:false,
+  whenShooting:false,
+ }),
+ Object.assign(new ShieldArcAbility(),{
+  radius: 26,
+  angle: -60,
+  regen: 1,
+  cooldown: 60 * 20,
+  max: 140,
+  width: 2,
+  drawArc:true,
+  whenShooting:false,
+ }),
 )
 legacy.weapons.add(
     Object.assign(new Weapon("ai-legacy-missile-nest"),{

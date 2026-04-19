@@ -16,6 +16,10 @@ function AddCoolant(turret, amount) {
 脉冲合金破盾 
 玻璃钢只能用于半穿甲弹而且尽量少搞
 */
+
+//我提前编码了贴图
+var shell = Core.atlas.find("shell")
+//这部分是炮台与子弹的实例
 const restricted = new TractorBeamTurret("restricted");
 exports.restricted = restricted;
 Object.assign(restricted, {
@@ -427,6 +431,97 @@ hell.ammo(
    sizeTo: 3,
   }),
   buildingDamageMultiplier: 1.25,
+ }),
+ items.chip, Object.assign(new BasicBulletType(8, 0), {
+  trailColor: Color.valueOf("#ffb855"),
+  backColor: Color.valueOf("#ffb855"),
+  frontColor: Color.valueOf("#ffb855"),
+  mixColorFrom: Color.valueOf("#ffffff00"),
+  mixColorTo: Color.valueOf("#ffffff00"),
+  armorMultiplier: 0.5,
+  ammoMultiplier: 20,
+  lifetime: 30,
+  width: 8,
+  height: 16,
+  collidesAir: false,
+  pierceArmor: false,
+  homingPower: 0.05,
+  splashDamageRadius: 12,
+  //范围伤害的范围
+  splashDamage: 30,
+  //范围伤害的伤害
+  shootEffect: Fx.shootPyraFlame,
+  smokeEffect: Fx.shootBigSmoke,
+  trailChance: 1,
+  trailInterval: 8,
+  trailLength: 6,
+  trailEffect: Object.assign(new ParticleEffect(), {
+   particles: 2,
+   sizeTo: 0,
+   sizeFrom: 3,
+   colorTo: Color.valueOf("#ffb855"),
+   colorFrom: Color.valueOf("#ffb855"),
+   cone: -360,
+   lifetime: 30,
+   length: 3,
+   layer: 100,
+   region: shell,
+   useRotation: false,
+   baseRotation: 0,
+  }),
+  hitEffect: new MultiEffect(
+   Object.assign(new ParticleEffect(), {
+    particles: 13,
+    sizeTo: 0,
+    sizeFrom: 5,
+    colorTo: Color.valueOf("#ffb855"),
+    colorFrom: Color.valueOf("#ffb855"),
+    cone: -360,
+    lifetime: 30,
+    layer: 100,
+    length: 36,
+    region: shell,
+    useRotation: false,
+    baseRotation: 0,
+   }
+   ),
+   Object.assign(new WaveEffect(), {
+    lifetime: 15,
+    sizeFrom: 0,
+    sizeTo: 14,
+    strokeFrom: 4,
+    strokeTo: 0,
+    colorFrom: Color.valueOf("#ffb855"),
+    colorTo: Color.valueOf("#ffb855"),
+   }),
+  ),
+  despawnEffect: new MultiEffect(
+   Object.assign(new ParticleEffect(), {
+    particles: 13,
+    sizeTo: 0,
+    sizeFrom: 5,
+    colorTo: Color.valueOf("#ffb855"),
+    colorFrom: Color.valueOf("#ffb855"),
+    cone: -360,
+    lifetime: 30,
+    layer: 100,
+    length: 36,
+    region: shell,
+    useRotation: false,
+    baseRotation: 0,
+   }
+   ),
+   Object.assign(new WaveEffect(), {
+    lifetime: 15,
+    sizeFrom: 0,
+    sizeTo: 14,
+    strokeFrom: 4,
+    strokeTo: 0,
+    colorFrom: Color.valueOf("#ffb855"),
+    colorTo: Color.valueOf("#ffb855"),
+   }),
+  ),
+  buildingDamageMultiplier: 1,
  }),
 )
 
@@ -1243,3 +1338,159 @@ wraith.requirements = ItemStack.with(
  items.glassSteel, 500,
  items.viaonChip, 340,
  Items.surgeAlloy, 420,);
+
+const pfc = extend(ItemTurret, "pfc", {});
+exports.pfc = pfc;
+Object.assign(pfc, {
+ health: 250,
+ armor: 2,
+ range: 21.5 * 8,
+ reload: 60 / 4,
+ size: 1,
+ inaccuracy: 0.2,
+ liquidCapacity: 10,
+ maxAmmo: 20,
+ consumeAmmoOnce: true,
+ buildTime: 2 * 60,
+ //shootSound: Vars.tree.loadSound("shootMini1"),
+ shootSound: Vars.tree.loadSound("pfc-shoot"),
+ shootSoundVolume: 0.5,
+ shootEffect: new MultiEffect(
+  Object.assign(new ParticleEffect(), {
+   particles: 1,
+   sizeTo: 0,
+   sizeFrom: 0.5,
+   colorTo: Color.valueOf("#ffb855"),
+   colorFrom: Color.valueOf("#db661c"),
+   cone: 10,
+   length: 2.5,
+   lifetime: 14,
+   layer: 101,
+   interp: Interp.circleOut,
+   sizeInterp: Interp.pow2In,
+  }),
+  Object.assign(new ParticleEffect(), {
+   particles: 2,
+   sizeTo: 0,
+   sizeFrom: 0.5,
+   colorTo: Color.valueOf("#454545ff"),
+   colorFrom: Color.valueOf("#db661c"),
+   cone: 10,
+   length: 4,
+   lifetime: 12,
+   layer: 100,
+   interp: Interp.circleOut,
+  })),
+ buildVisibility: BuildVisibility.shown,
+ category: Category.turret,
+ requirements: ItemStack.with(
+  Items.copper, 20,
+  Items.lead, 10,
+ )
+}),
+
+
+ pfc.ammo(
+  Items.copper, Object.assign(new BasicBulletType(16, 12), {//speed,damage
+   ammoMultiplier: 2,
+   trailColor: Color.valueOf("#ffb855"),
+   backColor: Color.valueOf("#ffb855"),
+   frontColor: Color.valueOf("#ffffff"),
+   mixColorFrom: Color.valueOf("#ffffff00"),
+   lifetime: 11.5,
+   width: 4,
+   height: 22,
+   hitEffect: new MultiEffect(
+    Fx.hitScepterSecondary,
+   )
+  }
+  ),
+  Items.lead, Object.assign(new BasicBulletType(16, 8), {//speed,damage
+   ammoMultiplier: 2,
+   reloadMultiplier: 1.25,
+   trailColor: Color.valueOf("#ffb855"),
+   backColor: Color.valueOf("#ffb855"),
+   frontColor: Color.valueOf("#ffffff"),
+   mixColorFrom: Color.valueOf("#ffffff00"),
+   lifetime: 11.5,
+   width: 4,
+   height: 22,
+   hitEffect: new MultiEffect(
+    Fx.hitScepterSecondary,
+   )
+  }),
+  Items.beryllium, Object.assign(new BasicBulletType(16, 20), {//speed,damage
+   ammoMultiplier: 2,
+   reloadMultiplier: 0.75,
+   trailColor: Color.valueOf("#ffb855"),
+   backColor: Color.valueOf("#ffb855"),
+   frontColor: Color.valueOf("#ffffff"),
+   mixColorFrom: Color.valueOf("#ffffff00"),
+   lifetime: 11.5,
+   width: 4,
+   height: 22,
+   hitEffect: new MultiEffect(
+    Fx.hitScepterSecondary,
+   )
+  }),
+  Items.thorium, Object.assign(new BasicBulletType(16, 20), {//speed,damage
+   armorMultiplier: 0.5,
+   ammoMultiplier: 2,
+   reloadMultiplier: 0.75,
+   trailColor: Color.valueOf("#ffb855"),
+   backColor: Color.valueOf("#ffb855"),
+   frontColor: Color.valueOf("#ffffff"),
+   mixColorFrom: Color.valueOf("#ffffff00"),
+   lifetime: 11.5,
+   width: 4,
+   height: 22,
+   hitEffect: new MultiEffect(
+    Fx.hitScepterSecondary,
+   ),
+  }),
+  items.chip, Object.assign(new BasicBulletType(16, 12), {//speed,damage
+   ammoMultiplier: 20,
+   shieldDamageMultiplier: 3,
+   backColor: Color.valueOf("#ffb855"),
+   frontColor: Color.valueOf("#ffb855"),
+   mixColorFrom: Color.valueOf("#ffffff00"),
+   lifetime: 11.5,
+   width: 5,
+   height: 22,
+   trailColor: Color.valueOf("#ffb855"),
+   trailLength: 4,
+   hitEffect: new MultiEffect(
+    Fx.hitScepterSecondary,
+    Object.assign(new ParticleEffect(), {
+     particles: 8,
+     sizeTo: 0,
+     sizeFrom: 5,
+     colorTo: Color.valueOf("#ffb855"),
+     colorFrom: Color.valueOf("#ffb855"),
+     cone: -360,
+     lifetime: 30,
+     layer: 100,
+     region: shell,
+     useRotation: false,
+     baseRotation: 0,
+    },
+    )
+   ),
+   despawnEffect: new MultiEffect(
+    Object.assign(new ParticleEffect(), {
+     particles: 8,
+     sizeTo: 0,
+     sizeFrom: 5,
+     colorTo: Color.valueOf("#ffb855"),
+     colorFrom: Color.valueOf("#ffb855"),
+     cone: -360,
+     lifetime: 30,
+     layer: 100,
+     region: shell,
+     useRotation: false,
+     baseRotation: 0,
+    }
+    )
+   )
+  }
+  ))
