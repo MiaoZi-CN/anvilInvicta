@@ -1,6 +1,6 @@
 const fluids = require("fluids");
 const items = require("items");
-
+var shell = Core.atlas.find("shell")
 const steamPressurizer = new ThermalGenerator("steam-pressurizer");
 exports.steamPressurizer = steamPressurizer;
 Object.assign(steamPressurizer, {
@@ -223,6 +223,71 @@ Object.assign(chemoRingEngine, {
  canOverdrive: false,
  liquidCapacity: 60,
  warmupSpeed: 0.01,
+ explosionShake: 6,
+ explosionShakeDuration: 16,
+ explosionDamage: 2000,
+ explosionMinWarmup: 0.8,
+ explosionRadius: 10,
+ explodeEffect: new MultiEffect(
+  Object.assign(new ParticleEffect(), {
+   particles: 25,
+   sizeTo: 0,
+   sizeFrom: 5,
+   colorTo: Color.valueOf("#8CFFFF"),
+   colorFrom: Color.valueOf("#9CC5FFFF"),
+   cone: -360,
+   lifetime: 80,
+   layer: 100,
+   length: 100,
+   region: shell,
+   useRotation: false,
+   baseRotation: 0,
+  },
+  ),
+  Object.assign(new ParticleEffect(), {
+   particles: 14,
+   sizeTo: 0,
+   sizeFrom: 16,
+   colorTo: Color.valueOf("#8CFFFF"),
+   colorFrom: Color.valueOf("#9CC5FFFF"),
+   cone: -360,
+   lifetime: 40,
+   layer: 100,
+   length: 100,
+   region: shell,
+   useRotation: false,
+   baseRotation: 0,
+  },),
+  Object.assign(new ParticleEffect(), {
+   particles: 14,
+   sizeTo: 0,
+   sizeFrom: 13,
+   colorTo: Color.valueOf("#8CFFFF"),
+   colorFrom: Color.valueOf("#9CC5FFFF"),
+   cone: -360,
+   lifetime: 100,
+   layer: 100,
+   length: 100,
+   region: shell,
+   useRotation: false,
+   baseRotation: 0,
+  },),
+  Object.assign(new ParticleEffect(), {
+   particles: 14,
+   sizeTo: 0,
+   sizeFrom: 18,
+   colorTo: Color.valueOf("#8CFFFF"),
+   colorFrom: Color.valueOf("#9CC5FFFF"),
+   cone: -360,
+   lifetime: 130,
+   layer: 100,
+   length: 100,
+   region: shell,
+   useRotation: false,
+   baseRotation: 0,
+  }
+  ),
+ ),
  drawer: new DrawMulti(
   new DrawRegion("-bottom"),
   Object.assign(new DrawLiquidTile(Liquids.oil), {

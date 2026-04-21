@@ -15,9 +15,9 @@ require("blocks/miner");
 
 require("blocks/power");
 require("blocks/product");
-/*
 
-require("blocks/liquidBlock");
+
+require("blocks/forceprojector");/*
 require("blocks/shield");
 
 require("blocks/原版")
@@ -33,7 +33,7 @@ Events.on(EventType.ClientLoadEvent, () => {
   Log.info("人类什么时候冲出行星重力井了？");
   Log.info("对了，pulse钻机会因为NH修改原版类内容导致选择的物品来回跳");
  }
-  if (Vars.mods.getMod("ac") != null) {
+ if (Vars.mods.getMod("ac") != null) {
   Log.info("人类什么时候打的启示录战争？");
  }
 },)

@@ -813,7 +813,7 @@ exports.skynet = skynet;
 Object.assign(skynet, {
  health: 2620,
  size: 3,
- reload: 42,
+ reload: 32,
  range: 288,
  maxAmmo: 80,
  recoilTime: 15,
@@ -826,31 +826,24 @@ Object.assign(skynet, {
  shootY: 5,
  shoot: Object.assign(new ShootBarrel, {
   shots: 3,
-  shotDelay: 4,
-  barrels: [-9, 0, 0,
-   9, 0, 0]
+  shotDelay: 3,
+  barrels: [-5, 5.5, 0, 5, 5.5, 0]
  }),
 
  buildVisibility: BuildVisibility.shown,
  category: Category.turret,
  requirements: ItemStack.with(
-  Items.titanium, 180,
-  Items.lead, 145,
-  Items.graphite, 90,
+  Items.titanium, 90,
+  Items.lead, 65,
+  Items.graphite, 80,
   items.chip, 65),
  alwaysUnlocked: false,
  researchCostMultiplier: 30,
 });
 skynet.drawer.parts.addAll(
- Object.assign(new RegionPart("-1"), {
-  moveX: 1,
-  moveY: 0,
-  x: 0,
-  y: 0
- }),
- Object.assign(new RegionPart("-2"), {
-  moveX: -1,
-  moveY: 0,
+ Object.assign(new RegionPart("-shoot"), {
+  moveX: 0,
+  moveY: 1.5,
   x: 0,
   y: 0
  }),)
@@ -861,7 +854,7 @@ AddCoolant(skynet, 0.2);
 skynet.ammo(
  Items.graphite, Object.assign(new BasicBulletType(12, 28), {
   trailLength: 4,
-  trailColor: Color.valueOf("#FFFFFFFF"),
+  trailColor: Color.valueOf("#7d89d8ff"),
   backColor: Color.valueOf("#7d89d8ff"),
   frontColor: Color.valueOf("#dae1eeff"),
   mixColorFrom: Color.valueOf("#ffffff00"),
@@ -879,28 +872,30 @@ skynet.ammo(
   despawnEffect: Fx.flakExplosion,
   knockback: 2,
   shootEffect: Object.assign(new ParticleEffect(), {
-   region: "ai-六形",
    particles: 2,
    length: 25,
    lifetime: 48,
    interp: Interp.circleOut,
    sizeInterp: Interp.pow5Out,
    cone: 0,
-   colorFrom: Color.valueOf("#FFE3B0FF"),
-   colorTo: Color.valueOf("#FFE3B0FF"),
+   colorFrom: Color.valueOf("#7d89d8ff"),
+   colorTo: Color.valueOf("#7d89d8ff"),
    sizeFrom: 5.5,
    sizeTo: 0
   })
  }),
  Items.titanium, Object.assign(new BasicBulletType(12, 25), {
   trailLength: 4,
-  trailColor: Color.valueOf("#FFFFFFFF"),
   lifetime: 24,
   width: 8,
   height: 12,
   collidesGround: false,
   pierceArmor: false,
-  hitColor: Color.valueOf("#D0DAFDFF"),
+  trailColor: Color.valueOf("#7d89d8ff"),
+  backColor: Color.valueOf("#7d89d8ff"),
+  frontColor: Color.valueOf("#dae1eeff"),
+  mixColorFrom: Color.valueOf("#ffffff00"),
+  mixColorTo: Color.valueOf("#ffffff00"),
   homingPower: 0.05,
   splashDamageRadius: 12,
   splashDamage: 40,
@@ -922,12 +917,15 @@ skynet.ammo(
  }),
  Items.plastanium, Object.assign(new BasicBulletType(12, 30), {
   trailLength: 4,
-  trailColor: Color.valueOf("#FFFFFFFF"),
   lifetime: 24,
   width: 8,
   height: 12,
   reloadMultiplier: 0.9,
-  hitColor: Color.valueOf("#FCFFD9FF"),
+  trailColor: Color.valueOf("#9CB664FF"),
+  backColor: Color.valueOf("#9CB664FF"),
+  frontColor: Color.valueOf("#dae1eeff"),
+  mixColorFrom: Color.valueOf("#ffffff00"),
+  mixColorTo: Color.valueOf("#ffffff00"),
   collidesGround: false,
   pierceArmor: false,
   homingPower: 0.05,
@@ -941,8 +939,8 @@ skynet.ammo(
    width: 9,
    height: 3,
    lifetime: 6,
-   backColor: Color.valueOf("#FCFFD9FF"),
-   frontColor: Color.valueOf("#FCFFD9FF"),
+   backColor: Color.valueOf("#ffffff"),
+   frontColor: Color.valueOf("#9CB664FF"),
    hitEffect: Fx.none,
    despawnEffect: Fx.none
   }),
@@ -953,8 +951,8 @@ skynet.ammo(
    interp: Interp.circleOut,
    sizeInterp: Interp.pow5Out,
    cone: 0,
-   colorFrom: Color.valueOf("#FCFFD9FF"),
-   colorTo: Color.valueOf("#FCFFD9FF"),
+   colorFrom: Color.valueOf("#9CB664FF"),
+   colorTo: Color.valueOf("#9CB664FF"),
    sizeFrom: 5.5,
    sizeTo: 0
   })
@@ -963,14 +961,17 @@ skynet.ammo(
   status: status.alphaBurning,
   statusDuration: 150,
   trailLength: 4,
-  trailColor: Color.valueOf("#FFBD90FF"),
   speed: 12,
   damage: 28,
   lifetime: 24,
   width: 8,
   height: 12,
   reloadMultiplier: 0.9,
-  hitColor: Color.valueOf("#FF934AFF"),
+  trailColor: Color.valueOf("#FF5B5BFF"),
+  backColor: Color.valueOf("#FF5B5BFF"),
+  frontColor: Color.valueOf("#ffffff"),
+  mixColorFrom: Color.valueOf("#ffffff00"),
+  mixColorTo: Color.valueOf("#ffffff00"),
   collidesGround: false,
   pierceArmor: false,
   pierceCap: 2,
@@ -985,8 +986,8 @@ skynet.ammo(
     sizeTo: 30,
     strokeFrom: 7.5,
     strokeTo: 0,
-    colorFrom: Color.valueOf("#FFBD90FF"),
-    colorTo: Color.valueOf("#FCFFD9FF")
+    colorFrom: Color.valueOf("#FF5B5BFF"),
+    colorTo: Color.valueOf("#FF5B5BFF")
    }),
    Object.assign(new ParticleEffect(), {
     offset: 30,
@@ -999,9 +1000,9 @@ skynet.ammo(
     line: true,
     strokeFrom: 1.5,
     strokeTo: 1.5,
-    lightColor: Color.valueOf("#FCFFD9FF"),
-    colorFrom: Color.valueOf("#FFBD90FF"),
-    colorTo: Color.valueOf("#FCFFD9FF")
+    lightColor: Color.valueOf("#ffffff"),
+    colorFrom: Color.valueOf("#FF5B5BFF"),
+    colorTo: Color.valueOf("#ffffff")
    })),
   despawnEffect: new MultiEffect(
    Object.assign(new WaveEffect(), {
@@ -1010,8 +1011,8 @@ skynet.ammo(
     sizeTo: 30,
     strokeFrom: 7.5,
     strokeTo: 0,
-    colorFrom: Color.valueOf("#FFBD90FF"),
-    colorTo: Color.valueOf("#FCFFD9FF")
+    colorFrom: Color.valueOf("#FF5B5BFF"),
+    colorTo: Color.valueOf("#ffffff")
    }),
    Object.assign(new ParticleEffect(), {
     offset: 30,
@@ -1024,12 +1025,10 @@ skynet.ammo(
     line: true,
     strokeFrom: 1.5,
     strokeTo: 1.5,
-    lightColor: Color.valueOf("#FCFFD9FF"),
-    colorFrom: Color.valueOf("#FFBD90FF"),
-    colorTo: Color.valueOf("#FCFFD9FF")
+    lightColor: Color.valueOf("#ffffff"),
+    colorFrom: Color.valueOf("#FF5B5BFF"),
+    colorTo: Color.valueOf("#ffffff")
    })),
-  backColor: Color.valueOf("#FCFFD9FF"),
-  frontColor: Color.valueOf("#FFBD90FF"),
   incendAmount: 14,
   incendSpread: 20,
   incendChance: 10,
@@ -1037,8 +1036,8 @@ skynet.ammo(
    width: 9,
    height: 3,
    lifetime: 6,
-   backColor: Color.valueOf("#FCFFD9FF"),
-   frontColor: Color.valueOf("#FFBD90FF"),
+   backColor: Color.valueOf("#ffffff"),
+   frontColor: Color.valueOf("#FF5B5BFF"),
    despawnEffect: Fx.none,
    instantDisappear: true,
    incendAmount: 14,
@@ -1052,8 +1051,8 @@ skynet.ammo(
    interp: Interp.circleOut,
    sizeInterp: Interp.pow5Out,
    cone: 0,
-   colorFrom: Color.valueOf("#FCFFD9FF"),
-   colorTo: Color.valueOf("#FCFFD9FF"),
+   colorFrom: Color.valueOf("#ffffff"),
+   colorTo: Color.valueOf("#ffffff"),
    sizeFrom: 5.5,
    sizeTo: 0
   })
@@ -1067,7 +1066,7 @@ skynet.ammo(
   pierceArmor: false,
   trailColor: Color.valueOf("#f595beff"),
   backColor: Color.valueOf("#f595beff"),
-  frontColor: Color.valueOf("#ffffffff"),
+  frontColor: Color.valueOf("#ffffff"),
   mixColorFrom: Color.valueOf("#ffffff00"),
   mixColorTo: Color.valueOf("#ffffff00"),
   homingPower: 0.05,
@@ -1083,8 +1082,8 @@ skynet.ammo(
    interp: Interp.circleOut,
    sizeInterp: Interp.pow5Out,
    cone: 0,
-   colorFrom: Color.valueOf("#D0DAFDFF"),
-   colorTo: Color.valueOf("#D0DAFDFF"),
+   colorFrom: Color.valueOf("#f595beff"),
+   colorTo: Color.valueOf("#f595beff"),
    sizeFrom: 5.5,
    sizeTo: 0
   })
@@ -1392,6 +1391,7 @@ Object.assign(pfc, {
 
  pfc.ammo(
   Items.copper, Object.assign(new BasicBulletType(16, 12), {//speed,damage
+   sprite: "ai-fast-bullet",
    ammoMultiplier: 2,
    trailColor: Color.valueOf("#ffb855"),
    backColor: Color.valueOf("#ffb855"),
@@ -1406,6 +1406,7 @@ Object.assign(pfc, {
   }
   ),
   Items.lead, Object.assign(new BasicBulletType(16, 8), {//speed,damage
+   sprite: "ai-fast-bullet",
    ammoMultiplier: 2,
    reloadMultiplier: 1.25,
    trailColor: Color.valueOf("#ffb855"),
@@ -1420,6 +1421,7 @@ Object.assign(pfc, {
    )
   }),
   Items.beryllium, Object.assign(new BasicBulletType(16, 20), {//speed,damage
+   sprite: "ai-fast-bullet",
    ammoMultiplier: 2,
    reloadMultiplier: 0.75,
    trailColor: Color.valueOf("#ffb855"),
@@ -1434,6 +1436,7 @@ Object.assign(pfc, {
    )
   }),
   Items.thorium, Object.assign(new BasicBulletType(16, 20), {//speed,damage
+   sprite: "ai-fast-bullet",
    armorMultiplier: 0.5,
    ammoMultiplier: 2,
    reloadMultiplier: 0.75,
@@ -1449,10 +1452,11 @@ Object.assign(pfc, {
    ),
   }),
   items.chip, Object.assign(new BasicBulletType(16, 12), {//speed,damage
+   sprite: "ai-fast-bullet",
    ammoMultiplier: 20,
    shieldDamageMultiplier: 3,
    backColor: Color.valueOf("#ffb855"),
-   frontColor: Color.valueOf("#ffb855"),
+   frontColor: Color.valueOf("#ffffff"),
    mixColorFrom: Color.valueOf("#ffffff00"),
    lifetime: 11.5,
    width: 5,

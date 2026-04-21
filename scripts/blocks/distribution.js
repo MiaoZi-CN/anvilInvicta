@@ -217,14 +217,15 @@ Object.assign(fluxRail, {
 
  )
 })*/
-/*
+//传送带计算公式RealSpeed = 2.5*60*speed = 150speed
+
 const metaglassConveyor = new Conveyor("metaglass-conveyor");
 exports.metaglassConveyor = metaglassConveyor;
 Object.assign(metaglassConveyor, {
  health: 10,
  itemCapacity: 3,
- speed:1.384615385,
- displayedSpeed: 18,
+ speed: 0.15,
+ displayedSpeed: 22.5,
  placeableLiquid: true,
  buildVisibility: BuildVisibility.shown,
  category: Category.distribution,
@@ -234,58 +235,58 @@ Object.assign(metaglassConveyor, {
   Items.graphite, 1,
  )
 })
-
+/*
 const T2UnderflowDuct = new OverflowDuct("T2-underflow-duct");
 exports.T2UnderflowDuct = T2UnderflowDuct;
 Object.assign(T2UnderflowDuct,{
-    invert: true,
-    health: 100,
-    armor: 1,
-    speed: 60 / 26,
-    itemCapacity: 2,
-    suppressable: true,
-    squareSprite: false,
-    placeableLiquid: true,
-    buildVisibility: BuildVisibility.shown,
- category: Category.distribution,
- requirements: ItemStack.with(
-     Items.tungsten, 4,
-        Items.beryllium, 6,
-        Items.graphite, 6,
- )
+   invert: true,
+   health: 100,
+   armor: 1,
+   speed: 60 / 26,
+   itemCapacity: 2,
+   suppressable: true,
+   squareSprite: false,
+   placeableLiquid: true,
+   buildVisibility: BuildVisibility.shown,
+category: Category.distribution,
+requirements: ItemStack.with(
+    Items.tungsten, 4,
+       Items.beryllium, 6,
+       Items.graphite, 6,
+)
 })
-*/ /*
+
 const ductJunction = new Junction("duct-junction");
 exports.ductJunction = ductJunction;
 Object.assign(ductJunction,{
-    squareSprite: false,
-    health: 100,
-    speed: 12,
-    capacity: 3,
-    buildCostMultiplier: 4,
-    buildVisibility: BuildVisibility.shown,
- category: Category.distribution,
- requirements: ItemStack.with(
-        Items.beryllium, 2,
-        Items.graphite, 2,
- )
+   squareSprite: false,
+   health: 100,
+   speed: 12,
+   capacity: 3,
+   buildCostMultiplier: 4,
+   buildVisibility: BuildVisibility.shown,
+category: Category.distribution,
+requirements: ItemStack.with(
+       Items.beryllium, 2,
+       Items.graphite, 2,
+)
 })
 
 const T2DuctBridge = new BufferedItemBridge("T2-duct-bridge");
 exports.T2DuctBridge = T2DuctBridge;
 Object.assign(T2DuctBridge,{
-    health: 420,
-    size: 1,
-    placeableLiquid: true,
-    range: 6,
-    itemCapacity: 4,
-    buildVisibility: BuildVisibility.shown,
- category: Category.distribution,
- requirements: ItemStack.with(
-     Items.tungsten, 12,
-        Items.beryllium, 10,
-        Items.graphite, 10,
- )
+   health: 420,
+   size: 1,
+   placeableLiquid: true,
+   range: 6,
+   itemCapacity: 4,
+   buildVisibility: BuildVisibility.shown,
+category: Category.distribution,
+requirements: ItemStack.with(
+    Items.tungsten, 12,
+       Items.beryllium, 10,
+       Items.graphite, 10,
+)
 })
 
 T2Duct.bridgeReplacement = T2DuctBridge;
@@ -295,13 +296,13 @@ T2Duct.bridgeReplacement = T2DuctBridge;
 const T2ReinforcedConduit = new Conduit("T2-reinforced-conduit");
 exports.T2ReinforcedConduit = T2ReinforcedConduit;
 Object.assign(T2ReinforcedConduit,{
-    health: 400,
-    liquidCapacity: 30,
-    liquidPressure: 2,
-    buildVisibility: BuildVisibility.shown,
- category: Category.liquid,
- requirements: ItemStack.with(
-        Items.beryllium, 2,
- )
+   health: 400,
+   liquidCapacity: 30,
+   liquidPressure: 2,
+   buildVisibility: BuildVisibility.shown,
+category: Category.liquid,
+requirements: ItemStack.with(
+       Items.beryllium, 2,
+)
 })
- */
+*/

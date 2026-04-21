@@ -144,10 +144,18 @@ const glassSteelWall = extend(Wall, "glass-steel-wall", {
  requirements: ItemStack.with(
   items.glassSteel, 6,
   Items.graphite, 2,
-  items.chip,2
+  items.chip, 2
  ),
  category: Category.defense,
  buildVisibility: BuildVisibility.shown,
+ drawPlace(x, y, rotation, valid) {
+  this.super$drawPlace(x, y, rotation, valid);
+  Draw.color(Color.valueOf('#AFEFF3FF'));
+  Draw.alpha(0.8);
+  Draw.z(Layer.block);
+  Lines.stroke(2);
+  Lines.poly(x * 8, y * 8, 4, 10, 45);
+ },
 });
 
 glassSteelWall.buildType = () =>
@@ -207,7 +215,7 @@ Object.assign(pulseWall, {
   items.vibrantAlloy, 6,
   items.glassSteel, 2,
   Items.phaseFabric, 2,
-  items.chip,2
+  items.chip, 2
  ),
  category: Category.defense,
  buildVisibility: BuildVisibility.shown
@@ -229,7 +237,7 @@ Object.assign(pulseWallLarge, {
   items.vibrantAlloy, 24,
   items.glassSteel, 8,
   Items.phaseFabric, 8,
-  items.chip,8
+  items.chip, 8
  ),
  category: Category.defense,
  buildVisibility: BuildVisibility.shown
@@ -247,20 +255,35 @@ const rejection = extend(AutoDoor, "rejection", {
  requirements: ItemStack.with(
   items.glassSteel, 10,
   Items.graphite, 3,
-  items.chip,3
+  items.chip, 3
  ),
  category: Category.defense,
  buildVisibility: BuildVisibility.shown,
  setStats() {
   this.super$setStats();
-  this.stats.add(unHealable, "cannot")
+  this.stats.add(unHealable, false)
  },
 });
 rejection.buildType = prov(() =>
  extend(AutoDoor.AutoDoorBuild, rejection, {
   update() {
-   this.super$update();
-   this.maxHealth = Math.min(this.maxHealth, this.health)
+   this.super$update();  // 为什么是this._lastHealth？ 成员变量啊！
+   // 初始化上一刻生命值（首次调用时）
+   if (this._lastHealth === undefined) {
+    this._lastHealth = this.health;
+   }
+   //在上一刻生命，现在生命，最大生命中取较小值赋予给生命
+   this.health = Math.min(this._lastHealth, this.health, this.maxHealth);
+   // 更新上一刻生命值为当前生命值
+   this._lastHealth = this.health;
+  },
+  write(write) {
+   this.super$write(write);
+   write.f(this._lastHealth); // 持久化的地图写入
+  },
+  read(read, revision) {
+   this.super$read(read, revision);
+   this._lastHealth = read.f();     // 持久化的地图读取
   }
  })
 );
@@ -291,6 +314,14 @@ const adamantaneWall = extend(Wall, "adamantane-wall", {
   this.stats.add(maxHealthMultiplier, "5");
   this.stats.add(selfHealThreshold, "10 %");
   this.stats.add(selfHeal, 0.1 * 60);
+ },
+ drawPlace(x, y, rotation, valid) {
+  this.super$drawPlace(x, y, rotation, valid);
+  Draw.color(Color.valueOf('#ffd37f'));
+  Draw.alpha(0.8);
+  Draw.z(Layer.block);
+  Lines.stroke(2);
+  Lines.poly(x * 8, y * 8, 4, 10, 45);
  },
 });
 //const adamantaneWall = new Wall("adamantane-wall");

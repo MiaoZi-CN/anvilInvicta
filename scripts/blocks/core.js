@@ -9,7 +9,7 @@ Object.assign(arouse, {
     ammoCapacity: 400,
     speed: 6.2,
     accel: 1.2,
-    drag:0.8,
+    drag:1.1,
     engineOffset: 6,
     engineSize: 2,
     lowAltitude: false,
