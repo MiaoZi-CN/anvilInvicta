@@ -11,20 +11,24 @@ Blocks.sandWall.attributes.set(Attribute.sand, 1.75);
 Blocks.shaleWall.attributes.set(Attribute.sand, 1.5);
 Blocks.snowWall.attributes.set(Attribute.sand, 0.5);
 Blocks.stoneWall.attributes.set(Attribute.sand, 1);
+//新的属性！ 
+Attribute.add("SO2");
+
 
 const clayRock = new Floor("clay-rock");
 Object.assign(clayRock, {
  speedMultiplier: 1,
  dragMultiplier: 0.9,
- variants: 3
+ variants: 5
 })
 
-const quartzite = new Floor("quartzite");
-Object.assign(quartzite, {
+const quartzite = extend(Floor, "quartzite", {
  speedMultiplier: 1.3,
  dragMultiplier: 1.1,
  variants: 4
-})
+
+});
+
 
 const quartziteSand = new Floor("quartzite-sand");
 Object.assign(quartziteSand, {
@@ -44,13 +48,51 @@ const limeStone = new Floor("lime-stone");
 Object.assign(limeStone, {
  speedMultiplier: 1.1,
  dragMultiplier: 1.1,
- variants: 3,
+ variants: 4,
 })
 
+const kensenite = new Floor("kensenite");
+Object.assign(kensenite, {
+ speedMultiplier: 1.1,
+ dragMultiplier: 1.1,
+ variants: 3,
+})
+const bedrock = new Floor("bedrock", 0);
 
 
+function Shader(name) {
+ let shaders = Vars.mods.locateMod("ai").root.child("shaders");
+ let s = new Shaders.SurfaceShader(Shaders.getShaderFi("screenspace.vert").readString(), shaders.child(name + ".frag").readString());
+ let m = new CacheLayer.ShaderLayer(s);
+ CacheLayer.add(m);
+ return m
+}
 
+const rainbow = new Floor("rainbow", 0);
+Object.assign(rainbow, {
+ liquidDrop: Liquids.water,
+ cacheLayer: Shader("rrrrrainbow"),
+});
 
+const abyss = new Floor("abyss", 0);
+Object.assign(abyss, {
+ cacheLayer: Shader("pit"),
+ solid: true,
+ placeableOn: false,
+});
+
+const waterPit = new Floor("water-pit", 0);
+Object.assign(waterPit, {
+ liquidDrop: Liquids.water,
+ cacheLayer: Shader("water-pit"),
+ liquidMultiplier: 8,
+ buildVisibility: BuildVisibility.shown,
+ category: Category.effect,
+ requirements: ItemStack.with(
+  Items.graphite, 40,
+  Items.titanium, 120,
+ ),
+});
 /*
 const blackTop1 = new Floor("blackTop-white-1");
 Object.assign(blackTop1,{

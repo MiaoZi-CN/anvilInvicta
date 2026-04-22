@@ -5,6 +5,7 @@ var tiers = Stat("tiers");
 function AddCoolant(turret, amount) {
  return turret.coolant = turret.consumeCoolant(amount);
 }
+var PartRecoil = DrawPart.PartProgress.recoil
 /*
 钍 碳素玻璃穿透 
 钛速射 
@@ -371,7 +372,7 @@ hell.ammo(
   homingPower: 0.05,
   splashDamageRadius: 12,
   //范围伤害的范围
-  splashDamage: 65,
+  splashDamage: 125,
   //范围伤害的伤害
   shootEffect: Fx.shootPyraFlame,
   smokeEffect: Fx.shootBigSmoke,
@@ -393,7 +394,7 @@ hell.ammo(
   }),
   buildingDamageMultiplier: 4,
  }),
- Items.thorium, Object.assign(new BasicBulletType(8, 32), {
+ Items.thorium, Object.assign(new BasicBulletType(8, 44), {
   sprite: "ai-missile1",
   trailColor: Color.valueOf("#f595beff"),
   backColor: Color.valueOf("#f595beff"),
@@ -435,7 +436,7 @@ hell.ammo(
  items.chip, Object.assign(new BasicBulletType(8, 0), {
   trailColor: Color.valueOf("#ffb855"),
   backColor: Color.valueOf("#ffb855"),
-  frontColor: Color.valueOf("#ffb855"),
+  frontColor: Color.valueOf("#ffffff"),
   mixColorFrom: Color.valueOf("#ffffff00"),
   mixColorTo: Color.valueOf("#ffffff00"),
   armorMultiplier: 0.5,
@@ -524,6 +525,20 @@ hell.ammo(
   buildingDamageMultiplier: 1,
  }),
 )
+hell.drawer.parts.addAll(
+ Object.assign(new RegionPart("-shoot"), {
+  y: 1,
+  moveY: - 1.25,
+  under: true,
+  progress: PartRecoil
+ },),
+ Object.assign(new RegionPart("-back"), {
+  y: 1.5,
+  moveY: - 2.5,
+  under: false,
+  // progress: PartRecoil
+ }
+ ),)
 
 const nameReturn = extend(ItemTurret, "return", {});
 exports.nameReturn = nameReturn;
@@ -823,11 +838,11 @@ Object.assign(skynet, {
  targetGround: false,
  targetAir: true,
  rotateSpeed: 6,
- shootY: 5,
+ shootSound: Vars.tree.loadSound("missile2"),
  shoot: Object.assign(new ShootBarrel, {
   shots: 3,
   shotDelay: 3,
-  barrels: [-5, 5.5, 0, 5, 5.5, 0]
+  barrels: [-5, 3.5, 0, 5, 3.5, 0]
  }),
 
  buildVisibility: BuildVisibility.shown,
@@ -863,10 +878,11 @@ skynet.ammo(
   lifetime: 24,
   width: 8,
   height: 12,
+  hitSize: 12,
   collidesGround: false,
   pierceArmor: false,
   homingPower: 0.05,
-  splashDamageRadius: 12,
+  splashDamageRadius: 18,
   splashDamage: 62,
   hitEffect: Fx.flakExplosion,
   despawnEffect: Fx.flakExplosion,
@@ -889,6 +905,7 @@ skynet.ammo(
   lifetime: 24,
   width: 8,
   height: 12,
+  hitSize: 12,
   collidesGround: false,
   pierceArmor: false,
   trailColor: Color.valueOf("#7d89d8ff"),
@@ -897,7 +914,7 @@ skynet.ammo(
   mixColorFrom: Color.valueOf("#ffffff00"),
   mixColorTo: Color.valueOf("#ffffff00"),
   homingPower: 0.05,
-  splashDamageRadius: 12,
+  splashDamageRadius: 18,
   splashDamage: 40,
   hitEffect: Fx.flakExplosion,
   despawnEffect: Fx.flakExplosion,
@@ -920,6 +937,7 @@ skynet.ammo(
   lifetime: 24,
   width: 8,
   height: 12,
+  hitSize: 12,
   reloadMultiplier: 0.9,
   trailColor: Color.valueOf("#9CB664FF"),
   backColor: Color.valueOf("#9CB664FF"),
@@ -930,7 +948,7 @@ skynet.ammo(
   pierceArmor: false,
   homingPower: 0.05,
   fragBullets: 4,
-  splashDamageRadius: 12,
+  splashDamageRadius: 18,
   splashDamage: 50,
   knockback: 2,
   hitEffect: Fx.plasticExplosion,
@@ -966,6 +984,7 @@ skynet.ammo(
   lifetime: 24,
   width: 8,
   height: 12,
+  hitSize: 12,
   reloadMultiplier: 0.9,
   trailColor: Color.valueOf("#FF5B5BFF"),
   backColor: Color.valueOf("#FF5B5BFF"),
@@ -977,7 +996,7 @@ skynet.ammo(
   pierceCap: 2,
   homingPower: 0.05,
   fragBullets: 4,
-  splashDamageRadius: 12,
+  splashDamageRadius: 18,
   splashDamage: 56,
   hitEffect: new MultiEffect(
    Object.assign(new WaveEffect(), {
@@ -1070,11 +1089,15 @@ skynet.ammo(
   mixColorFrom: Color.valueOf("#ffffff00"),
   mixColorTo: Color.valueOf("#ffffff00"),
   homingPower: 0.05,
-  splashDamageRadius: 12,
+  splashDamageRadius: 18,
   splashDamage: 40,
+  hitSize: 12,
   hitEffect: Fx.flakExplosion,
   despawnEffect: Fx.flakExplosion,
   knockback: 2,
+  pierce: true,
+  pierceCap: 2,
+  reloadMultiplier: 0.8,
   shootEffect: Object.assign(new ParticleEffect(), {
    particles: 2,
    length: 25,
@@ -1277,55 +1300,7 @@ wraith.ammo(
     colorFrom: Color.valueOf("#FFFFFFFF"),
     colorTo: Color.valueOf("#FF5B5BFF")
    }))
- }),
-
- Items.pyratite, Object.assign(new BasicBulletType(10, 38), {
-  shootEffect: Fx.shootPyraFlame,
-  status: StatusEffects.burning,
-  pierce: true,
-  pierceCap: 3,
-  reloadMultiplier: 1.25,
-  ammoMultiplier: 2,
-  knockback: 0.2,
-  width: 13,
-  height: 22,
-  splashDamage: 26,
-  splashDamageRadius: 25.6,
-  smokeEffect: Fx.shootSmallSmoke,
-  trailLength: 6,
-  trailColor: Color.valueOf("#FFAA33"),
-  backColor: Color.valueOf("#FFAA33"),
-  frontColor: Color.valueOf("#dae1eeff"),
-  mixColorFrom: Color.valueOf("#ffffff00"),
-  mixColorTo: Color.valueOf("#ffffff00"),
-  lifetime: 38.5,
-  armorMultiplier: 3,
- }),
-
- Items.surgeAlloy, Object.assign(new BasicBulletType(10, 72), {
-  shootEffect: Fx.shootPyraFlame,
-  pierce: true,
-  pierceCap: 3,
-  reloadMultiplier: 0.75,
-  ammoMultiplier: 2,
-  knockback: 6,
-  width: 13,
-  height: 23,
-  armorMultiplier: 0.5,
-  smokeEffect: Fx.shootSmallSmoke,
-  lifetime: 38.5,
-  trailLength: 6,
-  trailColor: Color.valueOf("#F7E97EFF"),
-  backColor: Color.valueOf("#F7E97EFF"),
-  frontColor: Color.valueOf("#dae1eeff"),
-  mixColorFrom: Color.valueOf("#ffffff00"),
-  mixColorTo: Color.valueOf("#ffffff00"),
-  status: StatusEffects.shocked,
-  lightningDamage: 30,
-  lightning: 4,
-  lightningLength: 5,
-  lightningLengthRand: 4
- }));
+ }),);
 
 // Add requirements
 wraith.requirements = ItemStack.with(
@@ -1498,3 +1473,9 @@ Object.assign(pfc, {
    )
   }
   ))
+pfc.drawer.parts.addAll(
+ Object.assign(new RegionPart("-shoot"), {
+  y: 1,
+  moveY: - 1,
+  progress: PartRecoil
+ }),)

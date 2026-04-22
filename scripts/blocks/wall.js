@@ -356,14 +356,20 @@ adamantaneWall.buildType = () =>
      count++;
     }
    });
-   this.armor = this.block.armor * count + this.block.armor
-   this.maxHealth = this.block.health * count + this.block.health
+   let oldMaxHealth = this.maxHealth;
+   let ratio = oldMaxHealth > 0 ? this.health / oldMaxHealth : 1.0;
+   this.armor = this.block.armor * count + this.block.armor;
+   this.maxHealth = this.block.health * count + this.block.health;
+   // 保持血量百分比不变
+   this.health = this.maxHealth * ratio;
+   // 防止浮点误差导致超过上限
+   if (this.health > this.maxHealth) this.health = this.maxHealth;
   },
-  update() {
-   this.super$update();
-   if (this.health > this.maxHealth * 0.1) { Math.min(this.health += 0.1, this.maxHealth) };
-  }
- });
+   update() {
+    this.super$update();
+    if (this.health > this.maxHealth * 0.1) { Math.min(this.health += 0.1, this.maxHealth) };
+   }
+  });
 exports.adamantaneWall = adamantaneWall;
 //Object.assign(adamantaneWall, {})
 

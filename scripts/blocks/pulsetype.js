@@ -30,7 +30,7 @@ let drill = extend(Drill, "phase-drill", {
 
  size: 3,
  rotate: true,
- drawRim:false,
+ drawRim: false,
  hasPower: true,
  configurable: true,
 
@@ -350,13 +350,6 @@ drill.buildType = () => {
    if (seq == null || seq.isEmpty()) return;
 
    let { x, y, rotation } = this;
-   let { size, laser, laserCenter, laserEnd, laserWidth } = block;
-
-   let len = tilesize * size / 2;
-
-   let laserStartX = x + Geometry.d4x[rotation] * len;
-   let laserStartY = y + Geometry.d4y[rotation] * len;
-
    seq.each(tile => {
     let tx = tile.worldx(), ty = tile.worldy();
     Draw.color(Color.valueOf('#ffd37f'));

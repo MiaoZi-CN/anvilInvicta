@@ -134,8 +134,7 @@ Object.assign(photoetchingMachine, {
  outputItem: new ItemStack(items.chip, 3),
  drawer: new DrawMulti(
   new DrawRegion("-bottom"),
-//Object.assign(new DrawFade(), {scale: 1.13,alpha: 0.99}),
-//  new DrawWeave(),
+  Object.assign(new DrawArcSmelt(), {}),
   new DrawDefault()
  ),
  craftEffect: Fx.none,
@@ -150,8 +149,9 @@ Object.assign(photoetchingMachine, {
   Items.graphite, 20,
  )
 })
-photoetchingMachine.consumePower(2),
+photoetchingMachine.consumePower(4),
  photoetchingMachine.consumeItems(ItemStack.with(
   Items.titanium, 2,
   Items.silicon, 1,
+  Items.graphite, 1
  ));

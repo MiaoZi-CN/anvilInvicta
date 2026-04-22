@@ -8,12 +8,10 @@ const multiEfficientCoolant = extend(ConsumeLiquidFilter,
    var liq = this.getConsumed(build);
    return liq != null ? this.super$efficiency(build) * this.liquidEfficiencyMultiplier(liq) : 0;
   },
-
   liquidEfficiencyMultiplier(liquid) {
    return liquidCoolantMulti(liquid);
   },
  });
-
 const drill = extend(Drill, "fast-drill", {
  size: 3,
  scaledHealth: 100,
@@ -38,7 +36,7 @@ const drill = extend(Drill, "fast-drill", {
  }
 });
 
-drill.setupRequirements(Category.production, ItemStack.with(Items.titanium, 40, Items.silicon, 60, Items.graphite, 60))
+drill.setupRequirements(Category.production, ItemStack.with(Items.titanium, 40, Items.silicon, 40))
 drill.consume(multiEfficientCoolant).boost();
 drill.consumePower(6);
 drill.buildType = () => extend(Drill.DrillBuild, drill, {

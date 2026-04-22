@@ -21,14 +21,12 @@ const neon = new Liquid('neon', Color.valueOf('#B60CFFFF'));
 exports.neon = neon;
 Object.assign(neon, {
  viscosity: 0,
- heatCapacity: 0,
- temperature: 0,
+ heatCapacity: 1.2,
+ temperature: 0.2,
  flammability: 0,
  capPuddles: false,
- coolant: false,
  gas: true,
 });
-Liquids.nitrogen.coolant = true,
 Liquids.nitrogen.heatCapacity = 1.1
 Liquids.nitrogen.temperature = 0.2
 /*LLLLLLL*/

@@ -3,6 +3,7 @@
 require("status");
 require("units");
 require("blocks/environment");
+require("blocks/space");
 
 //require("blocks/bundles");
 require("blocks/core");
@@ -17,9 +18,8 @@ require("blocks/power");
 require("blocks/product");
 
 
-require("blocks/forceprojector");/*
-require("blocks/shield");
-
+require("blocks/forceprojector");
+/*
 require("blocks/原版")
 //require("blocks/draws");
 

@@ -11,7 +11,6 @@ const directionalForceProjector = extend(DirectionalForceProjector, "directional
 });
 directionalForceProjector.buildType = () => extend(DirectionalForceProjector.DirectionalForceProjectorBuild, directionalForceProjector, {
  loadTime: 0,//现在的冷却时间
- n: 15900,//完全恢复所需时间
  updateTile() {
   this.super$updateTile();
   if (this.buildup >= 0) {
@@ -21,7 +20,7 @@ directionalForceProjector.buildType = () => extend(DirectionalForceProjector.Dir
   if (this.buildup >= this.block.shieldHealth) {
    this.broken = true;
    this.buildup = 0;
-   this.loadTime = n
+   this.loadTime = 15900//完全恢复所需时间
   };
   if (this.loadTime >= 1) {
    this.broken = true;
@@ -30,7 +29,6 @@ directionalForceProjector.buildType = () => extend(DirectionalForceProjector.Dir
  },
  write(write) {
   this.super$write(write);
-  write.f(this.n);
   write.f(this.buildup);
  },
  read(read, revision) {
