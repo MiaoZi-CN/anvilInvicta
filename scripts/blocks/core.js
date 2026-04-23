@@ -56,13 +56,13 @@ const prismCore = extend(CoreBlock, 'prism-core'/*方块名*/, {
    prov(() => Pal.powerBar),
    floatp(() => e.getPowerProduction() / powerProduction)))
   );
- },
+ },/*
  canPlaceOn(tile, team, rotation) {
   return true;
  },
  canBreak(tile) {
   return Vars.state.teams.get(prismCore).getCount(this) > 1;
- }
+ }*/
 });
 prismCore.hasPower = true;
 prismCore.consumesPower = false;
@@ -74,6 +74,7 @@ prismCore.setupRequirements(
   Items.copper, 1000,
   Items.titanium, 400,
   Items.silicon, 600,
+  Items.graphite, 600,
   items.chip, 200,
  )
 );

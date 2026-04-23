@@ -38,7 +38,7 @@ const drill = extend(Drill, "fast-drill", {
 
 drill.setupRequirements(Category.production, ItemStack.with(Items.titanium, 40, Items.silicon, 40))
 drill.consume(multiEfficientCoolant).boost();
-drill.consumePower(6);
+drill.consumePower(4.5);
 drill.buildType = () => extend(Drill.DrillBuild, drill, {
  efficiencyScale() {
   let coolantMulti = multiEfficientCoolant.efficiency(this);

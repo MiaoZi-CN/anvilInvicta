@@ -297,14 +297,14 @@ const adamantaneWall = extend(Wall, "adamantane-wall", {
  absorbLasers: false,
  drawCracks: false,
  chanceDeflect: 2,
- flashHit: true,
+ flashHit: false,
  autotiler: true,
  autotileMidVariants: 1,
- buildTime: 60,
+ buildTime: 30,
  category: Category.defense,
  buildVisibility: BuildVisibility.shown,
  requirements: ItemStack.with(
-  Items.graphite, 12,
+  Items.graphite, 9,
   Items.silicon, 4,
   Items.titanium, 6,
  ),
@@ -365,11 +365,11 @@ adamantaneWall.buildType = () =>
    // 防止浮点误差导致超过上限
    if (this.health > this.maxHealth) this.health = this.maxHealth;
   },
-   update() {
-    this.super$update();
-    if (this.health > this.maxHealth * 0.1) { Math.min(this.health += 0.1, this.maxHealth) };
-   }
-  });
+  update() {
+   this.super$update();
+   if (this.health > this.maxHealth * 0.1) { Math.min(this.health += 0.1, this.maxHealth) };
+  }
+ });
 exports.adamantaneWall = adamantaneWall;
 //Object.assign(adamantaneWall, {})
 
