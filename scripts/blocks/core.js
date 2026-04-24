@@ -8,9 +8,9 @@ Object.assign(arouse, {
  //    ammoType: new ItemAmmoType(Items.copper),
  ammoCapacity: 400,
  speed: 6.2,
- accel: 0.55,
- drag: 1.1,
- engineOffset: 6,
+ accel: 1.55,
+ drag: 0.07,
+ engineOffset: 4.5,
  engineSize: 2,
  lowAltitude: false,
  trailLength: 3,
@@ -23,6 +23,7 @@ Object.assign(arouse, {
  faceTarget: true,
  itemCapacity: 50,
  buildSpeed: 3,
+ outlines:false
 })
 arouse.weapons.add(
  Object.assign(new BuildWeapon("arouse-build-weapon"), {

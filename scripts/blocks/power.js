@@ -190,12 +190,11 @@ Object.assign(tetradCrackingEngine, {
  liquidCapacity: 30,
  drawer: new DrawMulti(
   new DrawRegion("-bottom"),
-  Object.assign(new DrawArcSmelt(), {
+  Object.assign(new DrawLiquidTile(Liquids.water), {
+  }),
+    Object.assign(new DrawArcSmelt(), {
    midColor: Color.valueOf("#9CC5FFFF"),
    flameColor: Color.valueOf("#C9DFFFFF"),
-  }),
-  Object.assign(new DrawLiquidTile(Liquids.water), {
-   alpha: 0.6,
   }),
   new DrawDefault(),
  ),
