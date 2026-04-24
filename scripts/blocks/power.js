@@ -192,7 +192,7 @@ Object.assign(tetradCrackingEngine, {
   new DrawRegion("-bottom"),
   Object.assign(new DrawLiquidTile(Liquids.water), {
   }),
-    Object.assign(new DrawArcSmelt(), {
+  Object.assign(new DrawArcSmelt(), {
    midColor: Color.valueOf("#9CC5FFFF"),
    flameColor: Color.valueOf("#C9DFFFFF"),
   }),
@@ -201,9 +201,7 @@ Object.assign(tetradCrackingEngine, {
  category: Category.power,
  buildVisibility: BuildVisibility.shown,
  requirements: ItemStack.with(
-  Items.titanium, 60,
-  Items.copper, 20,
-  Items.lead, 15,
+  Items.titanium, 30,
   Items.silicon, 30,
  ),
 })
@@ -298,11 +296,9 @@ Object.assign(chemoRingEngine, {
  category: Category.power,
  buildVisibility: BuildVisibility.shown,
  requirements: ItemStack.with(
-  Items.titanium, 250,
-  Items.copper, 200,
-  Items.metaglass, 155,
+  Items.thorium, 100,
   Items.silicon, 120,
-  Items.thorium, 40,
+  Items.metaglass, 150,
  ),
 })
 chemoRingEngine.consumeLiquid(Liquids.oil, 0.7,)

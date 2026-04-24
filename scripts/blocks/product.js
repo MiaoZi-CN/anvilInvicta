@@ -36,11 +36,9 @@ Object.assign(advancedCompressor, {
  buildVisibility: BuildVisibility.shown,
  category: Category.crafting,
  requirements: ItemStack.with(
-  items.viaonChip, 20,
-  Items.surgeAlloy, 48,
+//  items.viaonChip, 20,
+  Items.surgeAlloy, 60,
   Items.plastanium, 75,
-  Items.graphite, 36,
-  Items.silicon, 48,
   items.chip, 40,
  )
 })
@@ -67,9 +65,7 @@ Object.assign(advancedKiln, {
  buildVisibility: BuildVisibility.shown,
  category: Category.crafting,
  requirements: ItemStack.with(
-  Items.lead, 60,
-  Items.thorium, 45,
-  Items.graphite, 30,
+  Items.thorium, 60,
   Items.silicon, 30,
  )
 })
@@ -110,8 +106,6 @@ Object.assign(advancedSmelter, {
  buildVisibility: BuildVisibility.shown,
  category: Category.crafting,
  requirements: ItemStack.with(
-  Items.copper, 240,
-  Items.thorium, 60,
   Items.surgeAlloy, 100,
   items.glassSteel, 80,
   items.chip, 100,
@@ -144,9 +138,7 @@ Object.assign(photoetchingMachine, {
  // ambientSoundVolume: 0.35,
  requirements: ItemStack.with(
   Items.titanium, 40,
-  Items.lead, 40,
   Items.silicon, 30,
-  Items.graphite, 20,
  )
 })
 photoetchingMachine.consumePower(4),

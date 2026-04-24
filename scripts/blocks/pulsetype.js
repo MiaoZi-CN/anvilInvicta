@@ -20,7 +20,7 @@ var itemIconSize = Vars.iconSmall / 4;
 var drillAreaSize = 5;
 let drill = extend(Drill, "phase-drill", {
  tier: 5,
- drillTime: 300,
+ drillTime: 250,
  liquidBoostIntensity: 1.8,
  drillEffectChance: 0,
 

@@ -179,35 +179,128 @@ const fluxRail = extend(Duct, "flux-rail", {
  update: true,
  buildVisibility: BuildVisibility.shown,
  category: Category.distribution,
+ uiIcon: (Core.atlas.find("flux-rail")),
+ fullIcon: (Core.atlas.find("flux-rail")),
  requirements: ItemStack.with(
-  // items.glassSteel, 1,
-  Items.graphite, 1,
+  Items.thorium, 1,
   Items.silicon, 1
- )
+ ),
+ drawPlace(x, y, rotation, valid) {
+  Draw.rect(Core.atlas.find("block-ai-flux-rail-ui"), x * 8, y * 8, rotation * 90);
+ },
+  setStats() {
+  this.super$setStats();
+  this.stats.add(Stat("straight"), true)
+ },
 })
-/*
+
 fluxRail.buildType = () =>
  extend(Duct.DuctBuild, fluxRail, {
-  draw() {
+  progress: 0,
+  capped: false,
+  backCapped: false,
 
-   if (this.rotation == 2 || this.rotation == 0) {//左和右
-    Draw.rect(Core.atlas.find("ai-flux-rail-x"), this.x, this.y);
-    Draw.reset()
+  draw() {
+   const { x, y, rotation, current: item, block, progress } = this;
+
+   const lastZ = Draw.z();
+   Draw.z(lastZ - 0.1);
+
+   if (rotation == 2 || rotation == 0) {
+    //左和右
+    Draw.rect(Core.atlas.find(block.name + "-x"), x, y);
    } else {
-    Draw.rect(Core.atlas.find("ai-flux-rail-y"), this.x, this.y);
-    Draw.reset()
+    Draw.rect(Core.atlas.find(block.name + "-y"), x, y);
    }
-   //  if (this.getLastItem() !== null) {
-   //   Draw.z(Layer.blockUnder + 0.1);
-   //   Draw.rect(this.getLastItem(), this.x, this.y, 32, 32);这里打算绘制物品来着
-   //  Draw.reset();
-   //  }
-   Draw.rect(Core.atlas.find("ai-flux-rail-top"), this.x, this.y, this.rotation * 90)
-   Draw.reset()
+
+   Draw.z(lastZ - 0.09);
+   if (item != null) {
+    const itemSize = 4;
+    const padding = itemSize;
+    if (item != null) {
+     const dir = Geometry.d4[Mathf.mod(rotation, 4)];
+     const offset = Tmp.v1.set(dir.x, dir.y).scl(block.size * Vars.tilesize / 2)
+      .add(padding * dir.x, padding * dir.y).scl(Mathf.clamp(progress) - 0.5);
+     // 变化的alpha值
+     let alpha = 0.6 + Mathf.sin(Time.globalTime * 0.3) * 0.2;
+     // 设置颜色时使用这个alpha值
+     //    Draw.color(255, 255, 255, alpha);
+     Draw.alpha(alpha);
+     //     Drawf.light(this.x, this.y, 40, Pal.accent, 1.0);
+     Draw.rect(item.fullIcon, x + offset.x, y + offset.y, itemSize, itemSize);
+     Draw.reset();
+    }
+   }
+   //左和右，绘制 
+   // 水平方向 (左=2, 下=3) 使用 cap2 作为前端，cap1 作为后端
+   if (this.capped && (rotation == 2 || rotation == 3)) {
+    Draw.rect(Core.atlas.find(block.name + "-cap2"), x, y, rotation * 90);
+   }
+   if (this.backCapped && (rotation == 2 || rotation == 3)) {
+    Draw.rect(Core.atlas.find(block.name + "-cap1"), x, y, rotation * 90 + 180);
+   }
+
+   // 竖直方向 (上=1, 右=1) 使用 cap1 作为前端，cap2 作为后端
+   if (this.capped && (rotation == 0 || rotation == 1)) {
+    Draw.rect(Core.atlas.find(block.name + "-cap1"), x, y, rotation * 90);
+   }
+   if (this.backCapped && (rotation == 0 || rotation == 1)) {
+    Draw.rect(Core.atlas.find(block.name + "-cap2"), x, y, rotation * 90 + 180);
+   }
+   // if (this.capped) Draw.rect(Core.atlas.find(block.name + "-cap1"), x, y, rotation * 90);
+   // if (this.backCapped) Draw.rect(Core.atlas.find(block.name + "-cap2"), x, y, rotation * 90 + 180);
+   // 变化的alpha值
+   let alpha = 0.6 + Mathf.sin(Time.globalTime * 0.4) * 0.2;
+   // 设置颜色时使用这个alpha值
+   Draw.color(Pal.accent.r, Pal.accent.g, Pal.accent.b, alpha);
+   Drawf.light(this.x, this.y, 40, Pal.accent, 1.0);
+   Draw.rect(Core.atlas.find(block.name + "-top"), x, y, rotation * 90);
+   Draw.reset();
+
+   Draw.z(lastZ);
+  },
+
+  acceptItem(source, item) {
+   const { current, items, rotation } = this;
+   return current == null && items.total() == 0 && source.relativeTo(this) == rotation;
+  },
+
+  onProximityUpdate() {
+   this.super$onProximityUpdate();
+
+   const { team } = this;
+   let next = this.front(), prev = this.back();
+   this.capped = next == null || next.team != team || !next.block.hasItems;
+   this.backCapped = prev == null || prev.team != team || !prev.block.hasItems;
+  },
+
+  updateTile() {
+   const { block, items } = this;
+   const { speed } = block;
+   this.progress += this.edelta() / speed * 2;
+
+   if (this.current == null && items.total() > 0) {
+    this.current = items.first();
+   }
+
+   const { current, progress, next } = this;
+   if (current != null && next != null) {
+    if (progress >= (1 - 1 / speed) && this.moveForward(current)) {
+     items.remove(current, 1);
+     this.current = null;
+     this.progress %= (1 - 1 / speed);
+
+     if (next.block === block) {
+      next.progress = this.progress;
+      this.progress = 0;
+     }
+    }
+   }
   }
- }),
- exports.fluxRail = fluxRail;
-*/
+ });
+exports.fluxRail = fluxRail;
+
+
 
 //以下非机制类
 /*
@@ -231,7 +324,6 @@ Object.assign(metaglassConveyor, {
  category: Category.distribution,
  requirements: ItemStack.with(
   Items.titanium, 1,
-  Items.metaglass, 1,
   Items.graphite, 1,
  )
 })

@@ -18,12 +18,8 @@ const drill = extend(Drill, "fast-drill", {
  armor: 1,
  tier: 4,
  buildCostMultiplier: 0.8,
+ liquidBoostIntensity: 2,
  hasPower: true,
- requirements: ItemStack.with(
-  Items.titanium, 40,
-  Items.silicon, 60,
-  Items.graphite, 60
- ),
  setStats() {
   this.super$setStats();
 

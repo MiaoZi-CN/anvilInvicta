@@ -56,7 +56,7 @@ Object.assign(arklight, {
  rotateSpeed: 25,
  range: 160,
  xRand: 0,
- shootY: -2,
+ shootY: -1,
  shootType: Object.assign(new RailBulletType(), {
   length: 168,
   pointEffectSpace: 8,
@@ -120,9 +120,7 @@ Object.assign(arklight, {
  buildVisibility: BuildVisibility.shown,
  category: Category.turret,
  requirements: ItemStack.with(
-  Items.copper, 20,
-  Items.lead, 20,
-  Items.silicon, 10,
+  Items.silicon, 20,
   Items.metaglass, 10)
 })
 arklight.consumePower(3);
@@ -848,10 +846,9 @@ Object.assign(skynet, {
  buildVisibility: BuildVisibility.shown,
  category: Category.turret,
  requirements: ItemStack.with(
-  Items.titanium, 90,
-  Items.lead, 65,
-  Items.graphite, 80,
-  items.chip, 65),
+  Items.titanium, 110,
+  items.chip, 65
+ ),
  alwaysUnlocked: false,
  researchCostMultiplier: 30,
 });
@@ -1395,6 +1392,24 @@ Object.assign(pfc, {
     Fx.hitScepterSecondary,
    )
   }),
+  Items.graphite, Object.assign(new BasicBulletType(16, 16), {//speed,damage
+   sprite: "ai-fast-bullet",
+   armorMultiplier: 0.75,
+   ammoMultiplier: 2,
+   reloadMultiplier: 0.75,
+   trailColor: Color.valueOf("#7d89d8ff"),
+   backColor: Color.valueOf("#7d89d8ff"),
+   frontColor: Color.valueOf("#dae1eeff"),
+   mixColorFrom: Color.valueOf("#ffffff00"),
+   mixColorTo: Color.valueOf("#ffffff00"),
+   lifetime: 11.5,
+   width: 4,
+   height: 22,
+   hitEffect: new MultiEffect(
+    Fx.hitScepterSecondary,
+   )
+  }
+  ),
   Items.beryllium, Object.assign(new BasicBulletType(16, 20), {//speed,damage
    sprite: "ai-fast-bullet",
    ammoMultiplier: 2,

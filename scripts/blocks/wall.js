@@ -300,11 +300,11 @@ const adamantaneWall = extend(Wall, "adamantane-wall", {
  flashHit: false,
  autotiler: true,
  autotileMidVariants: 1,
- buildTime: 30,
+ buildTime: 20,
  category: Category.defense,
  buildVisibility: BuildVisibility.shown,
  requirements: ItemStack.with(
-  Items.graphite, 9,
+  Items.graphite, 6,
   Items.silicon, 4,
   Items.titanium, 6,
  ),
@@ -312,8 +312,6 @@ const adamantaneWall = extend(Wall, "adamantane-wall", {
   this.super$setStats();
   this.stats.add(maxArmorMultiplier, "5");
   this.stats.add(maxHealthMultiplier, "5");
-  this.stats.add(selfHealThreshold, "10 %");
-  this.stats.add(selfHeal, 0.1 * 60);
  },
  drawPlace(x, y, rotation, valid) {
   this.super$drawPlace(x, y, rotation, valid);
@@ -365,14 +363,10 @@ adamantaneWall.buildType = () =>
    // 防止浮点误差导致超过上限
    if (this.health > this.maxHealth) this.health = this.maxHealth;
   },
-  update() {
-   this.super$update();
-   if (this.health > this.maxHealth * 0.1) { Math.min(this.health += 0.1, this.maxHealth) };
-  }
  });
 exports.adamantaneWall = adamantaneWall;
 //Object.assign(adamantaneWall, {})
-
+/*
 Events.on(EventType.ClientLoadEvent, () => {
  if (Vars.mods.getMod("new-horizon") != null) {
   glassSteelWall.health = 2000 * 2
@@ -381,4 +375,4 @@ Events.on(EventType.ClientLoadEvent, () => {
   pulseWallLarge.health = 2400 * 2 * 4
   adamantaneWall.health = 400
  }
-})
+})*/
