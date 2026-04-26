@@ -1,6 +1,6 @@
 /**
     author: miner
-    fixed null key in draw()
+    fixed: manual selection persisting after world updates
 */
 
 const JavaBoolean = java.lang.Boolean;
@@ -276,6 +276,9 @@ drill.buildType = () => {
  let drillItems = new Seq();
  let drillTileMap = null;
 
+ // ========== 新增标志 ==========
+ let playerSelected = false;   // 玩家是否手动选择过矿物
+
  return extend(DrillBuild, block, {
   // Building.onProximityUpdate();
   onProximityUpdate() {
@@ -299,13 +302,14 @@ drill.buildType = () => {
    drillItems.set(block.getItemArray());
    drillTileMap = new ObjectMap(block.drillTileMap);
 
-   // 只在有有效矿石时才切换矿物
-   let returnItem = block.getReturnItem();
-   if (returnItem != null) {
-    this.setDrillItem(returnItem);
+   // 仅在玩家未手动选择时自动切换最优矿物
+   if (!playerSelected) {
+    let returnItem = block.getReturnItem();
+    if (returnItem != null) {
+     this.setDrillItem(returnItem);
+    }
    }
-   // 如果 returnItem == null，则保持原有的 dominantItem
-   // 并且 dominantItems 不更新放置某些人把地板矿修改器挖了然后反复null地图暴毙
+   // 保持 dominantItems 数量更新（用于 UI 显示）
    if (this.dominantItem != null && drillTileMap != null) {
     this.dominantItems = drillTileMap.get(this.dominantItem).size;
    }
@@ -335,6 +339,8 @@ drill.buildType = () => {
       return "[accent]" + Strings.autoFixed(speed * drillEfficiency, 2) + StatUnit.perSecond.localized();
      }).style(Styles.outlineLabel).padLeft(8).growX().left();
     }), Styles.clearTogglei, () => {
+     // 玩家手动点击时，标记为已选择，之后不再自动切换
+     playerSelected = true;
      this.configure(item);
     }).checked(b => this.dominantItem == item).row();
    });
@@ -378,10 +384,22 @@ drill.buildType = () => {
    }
   },
 
+  // 可选：提供外部重置方法，如果日后需要重新启用自动选择
+  /*
+  resetAutoSelect() {
+   playerSelected = false;
+   let returnItem = block.getReturnItem();
+   if (returnItem != null) {
+    this.setDrillItem(returnItem);
+   }
+   this.updateDrillTiles();
+  },*/
+
   write(write) {
    this.super$write(write);
 
    write.i(this.dominantItem != null ? this.dominantItem.id : -1);
+   write.bool(playerSelected);
   },
 
   read(read, revision) {
@@ -392,8 +410,16 @@ drill.buildType = () => {
     let item = Vars.content.item(id);
     if (item != null) {
      this.setDrillItem(item);
+     playerSelected = true;   // 读取到存储的矿物，说明之前手动选过
     }
+   }
+   // 如果存档版本支持读取标志（由于 revision 可能没有记录，这里尝试读取，捕获异常或判断版本号）
+   try {
+    playerSelected = read.bool();
+   } catch(e) {
+    // 旧存档没有该字段，保持原逻辑（默认 false）
+    playerSelected = false;
    }
   },
  });
-}
+};

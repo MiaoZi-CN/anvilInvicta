@@ -2,6 +2,6 @@ name: "ai"//内部名
 displayName: "Anvil Invicta"//显示名
 author: "TheParotiaCarolae's past"//作者
 description: "Science and Technology"//简介
-version: 7//模组版本
+version: 8//模组版本
 minGameVersion: 154.2//需求最低版本
 hideBrowser:false

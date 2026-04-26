@@ -68,6 +68,7 @@ const prismCore = extend(CoreBlock, 'prism-core'/*方块名*/, {
 prismCore.hasPower = true;
 prismCore.consumesPower = false;
 prismCore.outputsPower = true;
+prismCore.conductivePower = true;
 prismCore.setupRequirements(
  Category.effect,
  BuildVisibility.shown,

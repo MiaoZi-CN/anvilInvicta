@@ -19,16 +19,21 @@ const clayRock = new Floor("clay-rock");
 Object.assign(clayRock, {
  speedMultiplier: 1,
  dragMultiplier: 0.9,
- variants: 5
+ variants: 6
 })
 
 const quartzite = extend(Floor, "quartzite", {
  speedMultiplier: 1.3,
  dragMultiplier: 1.1,
- variants: 4
-
+ variants: 5
 });
 
+const quartziteHard = new Floor("quartzite-hard");
+Object.assign(quartziteHard, {
+ speedMultiplier: 1.3,
+ dragMultiplier: 1.1,
+ variants: 5
+})
 
 const quartziteSand = new Floor("quartzite-sand");
 Object.assign(quartziteSand, {
@@ -48,7 +53,7 @@ const limeStone = new Floor("lime-stone");
 Object.assign(limeStone, {
  speedMultiplier: 1.1,
  dragMultiplier: 1.1,
- variants: 4,
+ variants: 5,
 })
 
 const kensenite = new Floor("kensenite");
@@ -57,6 +62,14 @@ Object.assign(kensenite, {
  dragMultiplier: 1.1,
  variants: 3,
 })
+
+const marble = new Floor("marble");
+Object.assign(marble, {
+ speedMultiplier: 1.1,
+ dragMultiplier: 1.2,
+ variants: 5,
+})
+
 const bedrock = new Floor("bedrock", 0);
 
 
@@ -93,11 +106,38 @@ Object.assign(waterPit, {
   Items.titanium, 120,
  ),
 });
+
+const spaceDeck1 = new Floor("space-deck1");
+Object.assign(spaceDeck1, {
+ variants: 0,
+ drawEdgeOut: false,
+ drawEdgeIn: false,
+ buildVisibility: BuildVisibility.shown,
+ category: Category.effect,
+ requirements: ItemStack.with(
+  Items.graphite, 50,
+  Items.titanium, 50,
+ ),
+})
+
+const spaceDeck2 = new Floor("space-deck2");
+Object.assign(spaceDeck2, {
+ variants: 0,
+ drawEdgeOut: false,
+ drawEdgeIn: false,
+ buildVisibility: BuildVisibility.shown,
+ category: Category.effect,
+ requirements: ItemStack.with(
+  Items.graphite, 50,
+  Items.titanium, 50,
+ ),
+})
+
 /*
-const blackTop1 = new Floor("blackTop-white-1");
+const blackTop1 = new Floor("black top");
 Object.assign(blackTop1,{
-    speedMultiplier:1.3,
-    dragMultiplier:1.3,
+    speedMultiplier:1.5,
+    dragMultiplier:1.5,
     variants: 0
 })
 

@@ -16,9 +16,9 @@ const drill = extend(Drill, "fast-drill", {
  size: 3,
  scaledHealth: 100,
  armor: 1,
- tier: 4,
+ tier: 6,
  buildCostMultiplier: 0.8,
- liquidBoostIntensity: 2,
+ liquidBoostIntensity: 1.6,
  hasPower: true,
  setStats() {
   this.super$setStats();

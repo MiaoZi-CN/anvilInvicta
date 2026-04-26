@@ -168,27 +168,33 @@ stackBridge.category = Category.distribution;
 
 exports.stackBridge = stackBridge;
 
-
 const fluxRail = extend(Duct, "flux-rail", {
  health: 200,
  armor: 2,
  size: 1,
  speed: 60 / 30,
  itemCapacity: 1,
- placeableLiquid: true,
  update: true,
  buildVisibility: BuildVisibility.shown,
  category: Category.distribution,
- uiIcon: (Core.atlas.find("flux-rail")),
- fullIcon: (Core.atlas.find("flux-rail")),
+ placeableLiquid: true,
+ hasPower: true,
+ consumesPower: false,
+ outputsPower: true,
+ conductivePower: true,
+
  requirements: ItemStack.with(
-  Items.thorium, 1,
-  Items.silicon, 1
+  Items.silicon, 2
  ),
- drawPlace(x, y, rotation, valid) {
-  Draw.rect(Core.atlas.find("block-ai-flux-rail-ui"), x * 8, y * 8, rotation * 90);
+
+ loadIcon() {
+  this.super$loadIcon();
+  this.fullIcon = this.uiIcon = Core.atlas.find(this.name + "-full");
  },
-  setStats() {
+ drawPlanRegion(plan, list) {
+  this.drawDefaultPlanRegion(plan, list);
+ },
+ setStats() {
   this.super$setStats();
   this.stats.add(Stat("straight"), true)
  },
@@ -201,8 +207,8 @@ fluxRail.buildType = () =>
   backCapped: false,
 
   draw() {
-   const { x, y, rotation, current: item, block, progress } = this;
-
+   const { x, y, rotation, current: item, block, progress, team } = this;
+   let teamColor = team.color;
    const lastZ = Draw.z();
    Draw.z(lastZ - 0.1);
 
@@ -252,8 +258,8 @@ fluxRail.buildType = () =>
    // 变化的alpha值
    let alpha = 0.6 + Mathf.sin(Time.globalTime * 0.4) * 0.2;
    // 设置颜色时使用这个alpha值
-   Draw.color(Pal.accent.r, Pal.accent.g, Pal.accent.b, alpha);
-   Drawf.light(this.x, this.y, 40, Pal.accent, 1.0);
+   Draw.color(teamColor.r, teamColor.g, teamColor.b, alpha);
+   Drawf.light(x, y, 40, teamColor, 1.0);
    Draw.rect(Core.atlas.find(block.name + "-top"), x, y, rotation * 90);
    Draw.reset();
 
@@ -312,6 +318,30 @@ Object.assign(fluxRail, {
 })*/
 //传送带计算公式RealSpeed = 2.5*60*speed = 150speed
 
+const fluxRailJunction = new Junction("flux-rail-junction");
+exports.fluxRailJunction = fluxRailJunction;
+Object.assign(fluxRailJunction, {
+ squareSprite: false,
+ health: 100,
+ speed: 60 / 40,
+ displayedSpeed: 30,
+ capacity: 2,
+ buildCostMultiplier: 4,
+ buildVisibility: BuildVisibility.shown,
+ category: Category.distribution,
+ placeableLiquid: true,
+ hasPower: true,
+ hasItems: true,
+ consumesPower: false,
+ outputsPower: true,
+ conductivePower: true,
+ requirements: ItemStack.with(
+  Items.silicon, 10,
+  Items.graphite, 10,
+ )
+})
+
+
 const metaglassConveyor = new Conveyor("metaglass-conveyor");
 exports.metaglassConveyor = metaglassConveyor;
 Object.assign(metaglassConveyor, {
@@ -327,6 +357,48 @@ Object.assign(metaglassConveyor, {
   Items.graphite, 1,
  )
 })
+
+const routerKing = extend(Router, "router-king", {
+ size: 16,
+ health: 500000,
+ armor: 500000,
+ speed: 1 / 600,
+ itemCapacity: 500000,
+ buildVisibility: BuildVisibility.shown,
+ category: Category.distribution,
+ underBullets: false,
+ requirements: ItemStack.with(
+  Items.copper, 4200000,
+ ),
+ setStats() {
+  this.super$setStats();
+  this.stats.add(Stat("god"), true)
+ },
+})
+
+routerKing.buildType = () =>
+ extend(Router.RouterBuild, routerKing, {
+  draw() {
+
+   const { block, x, y, team, lastItem } = this
+   let teamColor = team.color;
+   let alpha = 0.9 + Mathf.sin(Time.globalTime * 0.4) * 0.1;
+   // 设置颜色时使用这个alpha值
+   Draw.color(teamColor.r, teamColor.g, teamColor.b, alpha);
+   Drawf.light(this.x, this.y, 40, teamColor, 1.0);
+   Draw.rect(Core.atlas.find(this.block.name), x, y,);
+
+   if(lastItem != null){Draw.rect(lastItem.fullIcon, x, y, 16, 16, Time.globalTime * 6);}
+  },
+  update() {
+   this.super$update();
+
+  },
+  canControl() {
+   return true;
+  }
+ })
+
 /*
 const T2UnderflowDuct = new OverflowDuct("T2-underflow-duct");
 exports.T2UnderflowDuct = T2UnderflowDuct;
