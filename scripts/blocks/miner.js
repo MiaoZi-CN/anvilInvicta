@@ -1,10 +1,10 @@
-const statValueImpl = (cons) => new StatValue(){ display: cons };
+const statValueImpl = (cons) => new StatValue(){ display: cons };//语法糖有没有很香
 
 const multiEfficientCoolant = extend(ConsumeLiquidFilter,
  (liq) => !liq.gas && liq.coolant && liq.temperature <= 0.5 && liq.flammability <= 0.1, // 筛选可用于冷却的液体
  0.1, // 消耗量(每帧)
  {
-  efficiency(build) {
+  efficiency(build) {//效率
    var liq = this.getConsumed(build);
    return liq != null ? this.super$efficiency(build) * this.liquidEfficiencyMultiplier(liq) : 0;
   },
@@ -20,7 +20,7 @@ const drill = extend(Drill, "fast-drill", {
  buildCostMultiplier: 0.8,
  liquidBoostIntensity: 1.6,
  hasPower: true,
- setStats() {
+ setStats() {//stat部分，显示多液体效率
   this.super$setStats();
 
   this.stats.remove(Stat.booster);
@@ -33,7 +33,7 @@ const drill = extend(Drill, "fast-drill", {
 });
 
 drill.setupRequirements(Category.production, ItemStack.with(Items.titanium, 40, Items.silicon, 40))
-drill.consume(multiEfficientCoolant).boost();
+drill.consume(multiEfficientCoolant).boost();//使用多液体效率的消耗
 drill.consumePower(4.5);
 drill.buildType = () => extend(Drill.DrillBuild, drill, {
  efficiencyScale() {
@@ -49,7 +49,7 @@ function liquidCoolantMulti(liquid) {
  return Math.exp(0.5 * heatCapacity + 0.2 * temperature);
 }
 
-function multiCoolantStatValue(unit, amount, speedProv, strength, filter) {
+function multiCoolantStatValue(unit, amount, speedProv, strength, filter) {//显示多液体效率的statValue
  return statValueImpl(table => {
   table.row();
   table.table(null, c => {

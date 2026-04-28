@@ -5,7 +5,7 @@ var maxArmorMultiplier = Stat("maxArmorMultiplier");
 var maxHealthMultiplier = Stat("maxHealthMultiplier");
 var selfHealThreshold = Stat("selfHealThreshold");
 var selfHeal = Stat("selfHeal");
-const armorBlock = new Wall("armor-block");
+const armorBlock = new Wall("armor-block");//
 exports.armorBlock = armorBlock;
 Object.assign(armorBlock, {
  hasPower: true,
@@ -23,7 +23,7 @@ Object.assign(armorBlock, {
 });
 const compositeWall = extend(Wall, "composite-wall", {
  size: 2,
- scaledHealth: 660,
+ scaledHealth: 800,
  armor: 6,
  update: true,
  absorbLasers: true,
@@ -32,21 +32,21 @@ const compositeWall = extend(Wall, "composite-wall", {
  requirements: ItemStack.with(
   Items.titanium, 24,
   Items.graphite, 8,
-  Items.plastanium, 8,
+  Items.plastanium, 16,
  ),
- setStats() {
+ setStats() {//stat部分，显示伤害阈值
   this.super$setStats();
-  this.stats.add(damageThreshold, "20")
+  this.stats.add(damageThreshold, "30")
  },
 })
 
 compositeWall.buildType = prov(() =>
  extend(Wall.WallBuild, compositeWall, {
-  collision(bullet) {
-   if (bullet.damage < 20) {
+  collision(bullet) {//判断碰撞子弹的伤害，如果伤害小于20则不造成伤害，直接返回true结束碰撞
+   if (bullet.damage < 30) {//伤害阈值，低于这个值的子弹不造成伤害
     bullet.damage = 0
    }
-   if (bullet.splashDamage < 20) {
+   if (bullet.splashDamage < 30) {//范围伤害同样
     bullet.splashDamage = 0
    }//没错，是分开算的，没想到吧？
    this.super$collision(bullet);
@@ -148,7 +148,7 @@ const glassSteelWall = extend(Wall, "glass-steel-wall", {
  ),
  category: Category.defense,
  buildVisibility: BuildVisibility.shown,
- drawPlace(x, y, rotation, valid) {
+ drawPlace(x, y, rotation, valid) {//放置计划时的预览
   this.super$drawPlace(x, y, rotation, valid);
   Draw.color(Color.valueOf('#AFEFF3FF'));
   Draw.alpha(0.8);
@@ -308,12 +308,12 @@ const adamantaneWall = extend(Wall, "adamantane-wall", {
   Items.silicon, 4,
   Items.titanium, 6,
  ),
- setStats() {
+ setStats() {//stat部分，显示最大生命和最大护甲的倍率
   this.super$setStats();
   this.stats.add(maxArmorMultiplier, "5");
   this.stats.add(maxHealthMultiplier, "5");
  },
- drawPlace(x, y, rotation, valid) {
+ drawPlace(x, y, rotation, valid) {//放置计划时的预览
   this.super$drawPlace(x, y, rotation, valid);
   Draw.color(Color.valueOf('#ffd37f'));
   Draw.alpha(0.8);
@@ -334,7 +334,7 @@ adamantaneWall.buildType = () =>
     autotileRegions = TileBitmask.load(adamantaneWall.name + "-autotile"); // 贴图多了-autotile，这里也写吧，按理应该删掉-autotile
    }//我受够了
    const { x, y } = this;
-   let bits = 0;
+   let bits = 0;//判断，掩码，然后映射数字，最后获取贴图
    for (let i = 0; i < 8; i++) {
     let p = Geometry.d8[i];
     let other = this.nearby(p.x, p.y);
@@ -354,6 +354,7 @@ adamantaneWall.buildType = () =>
      count++;
     }
    });
+   // 根据相邻的同类墙数量调整护甲和生命值，并持久化血量分数防止血量上限变更出现的问题
    let oldMaxHealth = this.maxHealth;
    let ratio = oldMaxHealth > 0 ? this.health / oldMaxHealth : 1.0;
    this.armor = this.block.armor * count + this.block.armor;
@@ -376,3 +377,108 @@ Events.on(EventType.ClientLoadEvent, () => {
   adamantaneWall.health = 400
  }
 })*/
+const electromagneticWall = extend(Wall, "electromagnetic-wall", {
+ size: 1,
+ health: 1400,
+ armor: 4,
+ update: true,
+ absorbLasers: true,
+ hasPower: true,
+ consumesPower: true,
+ conductivePower: true,
+ chanceDeflect: 0,
+ buildTime: 10,
+ addArmor: 20,
+ category: Category.defense,
+ buildVisibility: BuildVisibility.shown,
+ // 补上建造材料（之前为空，会导致无法建造）
+ requirements: ItemStack.with(
+  Items.graphite, 6,
+  Items.silicon, 6,
+  Items.thorium, 6,
+  Items.titanium, 6
+ ),
+
+ setStats() {
+  this.super$setStats();
+  this.stats.add(Stat("maxArmor"), this.armor + this.addArmor);
+ },
+ /*
+  setBars() {
+   this.super$setBars();
+   this.addBar("armor", (e) => new Bar(
+    () => Core.bundle.format("bar.armor", Math.floor(e.armor())),
+    () => Pal.accent,
+    () => Math.min(e.getArmorProgress(), 1)
+   ));
+  }*/
+});
+
+// 每 tick 消耗电力 10/60 = 0.1667，即每秒消耗 10 点电力
+electromagneticWall.consumePower(10 / 60);
+
+electromagneticWall.buildType = () =>
+ extend(Wall.WallBuild, electromagneticWall, {
+  // 存储由电力提供的额外护甲值
+
+  extraArmor: 0,
+
+  // 重写 armor() 方法 —— Mindustry 读取护甲值的标准接口
+  /*
+  armor() {
+   return this.block.armor + this.extraArmor;
+  },
+
+  // 可选：保留 getArmor 以保持兼容性
+  getArmor() {
+   return this.armor();
+  },
+
+  getArmorProgress() {
+   return Math.min(this.armor() / 20, 1);
+  },
+*/
+ //这里介绍一下canConsume()方法，返回true表示当前有消耗（如必须的item这种）供应，返回false表示没有供应。
+ //在block类当中作为基类常用的方法，通常用来判断是否满足某些条件（如电力供应、物品供应等）以启用特定功能。在这个例子中，我们用它来判断是否有电力供应，从而决定是否增加额外的护甲值。
+  updateTile() {
+   this.super$updateTile();
+   if (this.canConsume()) {
+    this.extraArmor = this.block.addArmor;
+   } else {
+    this.extraArmor = 0;
+   }
+
+  },
+  draw() {
+   // this.super$draw();
+   let autotileRegions;
+   if (!autotileRegions) {
+    autotileRegions = TileBitmask.load(this.block.name + "-autotile"); // 贴图多了-autotile，这里也写吧，按理应该删掉-autotile
+   }//我受够了
+   const { x, y } = this;
+   let bits = 0;//判断，掩码，然后映射数字，最后获取贴图
+   for (let i = 0; i < 8; i++) {
+    let p = Geometry.d8[i];
+    let other = this.nearby(p.x, p.y);
+    if (other != null && other.block == this.block) {
+     bits |= (1 << i);
+    }
+   }
+   let bit = TileBitmask.values[bits];
+   const region = autotileRegions[bit];
+   Draw.rect(region, x, y);
+
+   if (this.canConsume()) {//如果有电力，绘制光效
+    const { block, team } = this//结构化赋值，简化代码
+    //    let teamColor = team.color;
+    let alpha = (0.5 + Mathf.sin(Time.globalTime * 0.1) * 0.5) * 0.5;//值域 0.25~0.75，周期20秒
+    //   Draw.color(teamColor.r, teamColor.g, teamColor.b, alpha);
+    Draw.color(100, 100, 100, alpha);
+    Drawf.light(x, y, 40, team.color, 1.0);
+    Draw.rect(region, x, y,);
+   }
+  },
+
+ });
+
+exports.electromagneticWall = electromagneticWall;

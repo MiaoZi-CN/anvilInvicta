@@ -100,7 +100,7 @@ const crystalProcessor = extend(Item, "crystal-processor", {
  compute: 90000,
  setStats() {
   this.super$setStats();
-  this.stats.add(Stat("computeTier"), this.compute);
+  this.stats.add(Stat("computeTier"), this.compute);//算力！
  }
 });
 exports.crystalProcessor = crystalProcessor;

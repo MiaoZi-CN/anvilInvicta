@@ -20,7 +20,7 @@ global.Filter = function (name) {
 }
 
 
-global.FourDireFilter = function (name) {
+global.FourDireFilter = function (name) {//这个函数就是一坨s山，别看了大家都头疼。
  var m = new global.Filter(name);
  m.buildType = () => {
   var items = [Items.copper, Items.lead, Items.titanium, Items.silicon];
@@ -78,7 +78,7 @@ global.FourDireFilter = function (name) {
       this.items.remove(items[i], 1);
      }
     }
-   },
+   },//我的持久化呢？
    //读取写入马上更新，歇逼了
   });//还要转换类型?
  }
@@ -99,7 +99,7 @@ stackBridge.buildType = prov(() => {
  var amount = 0;
 
  const block = stackBridge;
-
+//可以用extend来重写buildType
  return new JavaAdapter(BufferedItemBridge.BufferedItemBridgeBuild, {
   setLastItem(v) {
    lastItem = v;
@@ -119,7 +119,7 @@ stackBridge.buildType = prov(() => {
    }
    this.super$updateTile();
   },
-  updateTransport(other) {
+  updateTransport(other) {//重写updateTransport方法，实现传送老多物品功能
    if (this.items.total() >= block.itemCapacity && other != null && other.items.total() < block.itemCapacity) {
     other.setAmount(this.items.total());
     other.items.add(lastItem, other.getAmount());
@@ -130,10 +130,10 @@ stackBridge.buildType = prov(() => {
    }
   },
   //4倍速度出物品，原版速度为准
-  doDump() {
+  doDump() {//每当附近的块发生变化时都会调用这个方法，来更新堆积功能 
    for (var i = 0; i < 2; i++) {
     var other = this.nearby(i);
-    if (other instanceof StackConveyor.StackConveyorBuild && other.link == -1) other.cooldown = 0;
+    if (other instanceof StackConveyor.StackConveyorBuild && other.link == -1) other.cooldown = 0;//让冷却为0
     this.dumpAccumulate();
    }
   },
@@ -145,9 +145,9 @@ stackBridge.buildType = prov(() => {
    //Draw.rect(stackRegion, this.x, this.y, angle);
    var size = Vars.itemSize * Mathf.lerp(Math.min(this.items.total() / block.itemCapacity, 1), 1, 0.4);
    Drawf.shadow(Tmp.v1.x, Tmp.v1.y, size * 1.2);
-   Draw.rect(this.getLastItem().fullIcon, this.x, this.y, size, size, 0);
+   Draw.rect(this.getLastItem().fullIcon, this.x, this.y, size, size, 0);//实际上这可以再添加一个两个方块间的动画，来表现物品在桥上的移动，不过我觉得没必要了。
   },
-  acceptItem(source, item) {
+  acceptItem(source, item) {//实现所谓的堆叠功能
    if (this == source && this.items.total() < block.itemCapacity) return true;
    var other = Vars.world.tile(this.link);
    return (!((this.items.any() && !this.items.has(item)) || (this.items.total() >= this.getMaximumAccepted(item)))) && other != null && block.linkValid(this.tile, other);
@@ -168,7 +168,7 @@ stackBridge.category = Category.distribution;
 
 exports.stackBridge = stackBridge;
 
-const fluxRail = extend(Duct, "flux-rail", {
+const fluxRail = extend(Duct, "flux-rail", {//光速轨，很帅！
  health: 200,
  armor: 2,
  size: 1,
@@ -187,14 +187,14 @@ const fluxRail = extend(Duct, "flux-rail", {
   Items.silicon, 2
  ),
 
- loadIcon() {
+ loadIcon() {//获取图标
   this.super$loadIcon();
   this.fullIcon = this.uiIcon = Core.atlas.find(this.name + "-full");
  },
- drawPlanRegion(plan, list) {
+ drawPlanRegion(plan, list) {//放置计划预览
   this.drawDefaultPlanRegion(plan, list);
  },
- setStats() {
+ setStats() {//stat部分，继承直线传送，防止二愣子玩家以为这个东西和普通轨道一样了
   this.super$setStats();
   this.stats.add(Stat("straight"), true)
  },
@@ -207,7 +207,7 @@ fluxRail.buildType = () =>
   backCapped: false,
 
   draw() {
-   const { x, y, rotation, current: item, block, progress, team } = this;
+   const { x, y, rotation, current: item, block, progress, team } = this;//结构化赋值，简化代码
    let teamColor = team.color;
    const lastZ = Draw.z();
    Draw.z(lastZ - 0.1);
@@ -215,30 +215,30 @@ fluxRail.buildType = () =>
    if (rotation == 2 || rotation == 0) {
     //左和右
     Draw.rect(Core.atlas.find(block.name + "-x"), x, y);
-   } else {
+   } else {//上和下
     Draw.rect(Core.atlas.find(block.name + "-y"), x, y);
-   }
+   }//类似我的世界的贴图，分为横竖两种情况，就像木头一样是不是很聪明？喂，你们这些美术设计师是不是觉得分两种情况更好看啊？（虽然我也觉得分两种情况更好看，美术设计也是我）
 
    Draw.z(lastZ - 0.09);
-   if (item != null) {
-    const itemSize = 4;
-    const padding = itemSize;
     if (item != null) {
-     const dir = Geometry.d4[Mathf.mod(rotation, 4)];
+         const itemSize = 4;
+    const padding = itemSize;
+     const dir = Geometry.d4[Mathf.mod(rotation, 4)];//根据旋转方向获取单位向量
      const offset = Tmp.v1.set(dir.x, dir.y).scl(block.size * Vars.tilesize / 2)
       .add(padding * dir.x, padding * dir.y).scl(Mathf.clamp(progress) - 0.5);
      // 变化的alpha值
      let alpha = 0.6 + Mathf.sin(Time.globalTime * 0.3) * 0.2;
      // 设置颜色时使用这个alpha值
-     //    Draw.color(255, 255, 255, alpha);
+     //    Draw.color(255, 255, 255, alpha); 丢掉使用颜色
      Draw.alpha(alpha);
      //     Drawf.light(this.x, this.y, 40, Pal.accent, 1.0);
      Draw.rect(item.fullIcon, x + offset.x, y + offset.y, itemSize, itemSize);
      Draw.reset();
     }
-   }
-   //左和右，绘制 
+
+   //头疼的绘制
    // 水平方向 (左=2, 下=3) 使用 cap2 作为前端，cap1 作为后端
+   //cpa1较亮cpa2较暗，cap1作为上右端更好明亮，所以左和下使用cap2作为前端
    if (this.capped && (rotation == 2 || rotation == 3)) {
     Draw.rect(Core.atlas.find(block.name + "-cap2"), x, y, rotation * 90);
    }
@@ -253,8 +253,6 @@ fluxRail.buildType = () =>
    if (this.backCapped && (rotation == 0 || rotation == 1)) {
     Draw.rect(Core.atlas.find(block.name + "-cap2"), x, y, rotation * 90 + 180);
    }
-   // if (this.capped) Draw.rect(Core.atlas.find(block.name + "-cap1"), x, y, rotation * 90);
-   // if (this.backCapped) Draw.rect(Core.atlas.find(block.name + "-cap2"), x, y, rotation * 90 + 180);
    // 变化的alpha值
    let alpha = 0.6 + Mathf.sin(Time.globalTime * 0.4) * 0.2;
    // 设置颜色时使用这个alpha值
@@ -266,37 +264,37 @@ fluxRail.buildType = () =>
    Draw.z(lastZ);
   },
 
-  acceptItem(source, item) {
+  acceptItem(source, item) {//重写acceptItem方法，只有当前没有物品且来源是正确的方向时才接受物品，实现所谓的直线传送
    const { current, items, rotation } = this;
    return current == null && items.total() == 0 && source.relativeTo(this) == rotation;
   },
 
-  onProximityUpdate() {
+  onProximityUpdate() {//每当附近的块发生变化时都会调用这个方法，来更新capped和backCapped状态
    this.super$onProximityUpdate();
 
    const { team } = this;
    let next = this.front(), prev = this.back();
-   this.capped = next == null || next.team != team || !next.block.hasItems;
-   this.backCapped = prev == null || prev.team != team || !prev.block.hasItems;
+   this.capped = next == null || next.team != team || !next.block.hasItems;//我很天才吧？
+   this.backCapped = prev == null || prev.team != team || !prev.block.hasItems;//同上！
   },
 
   updateTile() {
    const { block, items } = this;
    const { speed } = block;
-   this.progress += this.edelta() / speed * 2;
+   this.progress += this.edelta() / speed * 2;//速度调整
 
-   if (this.current == null && items.total() > 0) {
+   if (this.current == null && items.total() > 0) {//如果当前没有物品但是有物品了，拿出第一个物品放到当前物品内
     this.current = items.first();
    }
 
    const { current, progress, next } = this;
    if (current != null && next != null) {
-    if (progress >= (1 - 1 / speed) && this.moveForward(current)) {
+    if (progress >= (1 - 1 / speed) && this.moveForward(current)) {//进度达到1时尝试推进物品，如果成功了就把物品移除，当前物品置空，进度取模保持连续
      items.remove(current, 1);
      this.current = null;
      this.progress %= (1 - 1 / speed);
 
-     if (next.block === block) {
+     if (next.block === block) {//如果下一个也是同样的轨道，直接把进度传递过去，保持物品连续平滑移动
       next.progress = this.progress;
       this.progress = 0;
      }
@@ -370,7 +368,7 @@ const routerKing = extend(Router, "router-king", {
  requirements: ItemStack.with(
   Items.copper, 4200000,
  ),
- setStats() {
+ setStats() {//stat部分，显示神！
   this.super$setStats();
   this.stats.add(Stat("god"), true)
  },
@@ -380,7 +378,7 @@ routerKing.buildType = () =>
  extend(Router.RouterBuild, routerKing, {
   draw() {
 
-   const { block, x, y, team, lastItem } = this
+   const { block, x, y, team, lastItem } = this//结构化赋值，简化代码
    let teamColor = team.color;
    let alpha = 0.9 + Mathf.sin(Time.globalTime * 0.4) * 0.1;
    // 设置颜色时使用这个alpha值
@@ -394,7 +392,7 @@ routerKing.buildType = () =>
    this.super$update();
 
   },
-  canControl() {
+  canControl() {//重写canControl方法，允许玩家直接控制这个路由器
    return true;
   }
  })

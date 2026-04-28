@@ -7,7 +7,7 @@ const JavaBoolean = java.lang.Boolean;
 const Integer = java.lang.Integer;
 const Comparator = java.util.Comparator;
 const DrillBuild = Drill.DrillBuild;
-const comparator = (method) => new Comparator(){
+const comparator = (method) => new Comparator(){//语法糖有没有很香
  compare: method,
 };
 
@@ -37,7 +37,7 @@ let drill = extend(Drill, "phase-drill", {
  // 我使用oreCount纯纯是为了适配原版或其他mod
  drillTileMap: new ObjectMap(),
 
- init() {
+ init() {//在init中将block赋值为this，确保在后续方法中可以访问到block的属性和方法
   block = this;
 
   this.super$init();
@@ -51,7 +51,7 @@ let drill = extend(Drill, "phase-drill", {
   this.laserEnd = Core.atlas.find(name + "-laser-end");
  },
 
- canPlaceOn(tile, team, rotation) {
+ canPlaceOn(tile, team, rotation) {//重写canPlaceOn方法，增加多块范围内的可挖掘性检查
   if (this.isMultiblock()) {
    return this.getAreaTiles(tile, rotation).contains(boolf(t => this.canMine(t)));
   } else {
@@ -61,7 +61,7 @@ let drill = extend(Drill, "phase-drill", {
 
  countOre(tile) { },
 
- customCountOre(tile, rotation) {
+ customCountOre(tile, rotation) {//自定义的countOre方法，统计范围内的矿物种类和数量，并且根据优先级排序，最后将最优矿物和数量存储在returnItem和returnCount中，供后续使用
   this.returnItem = null;
   this.returnCount = 0;
 
@@ -86,7 +86,7 @@ let drill = extend(Drill, "phase-drill", {
 
   oreCount.keys().toArray(itemArray);
 
-  itemArray.sort(comparator((item1, item2) => {
+  itemArray.sort(comparator((item1, item2) => {//排序：优先级 > 数量 > ID
    let type = JavaBoolean.compare(!item1.lowPriority, !item2.lowPriority);
    if (type != 0) return type;
    let amounts = Integer.compare(oreCount.get(item1, 0), oreCount.get(item2, 0));
@@ -147,7 +147,7 @@ let drill = extend(Drill, "phase-drill", {
   });
  },
 
- drawDrillSpeedInfo(item, count, dx, dy, font, fx, fy, fcolor, fscale) {
+ drawDrillSpeedInfo(item, count, dx, dy, font, fx, fy, fcolor, fscale) {//根据矿物数量计算并绘制挖掘速度信息
   let speed = 60 / this.getDrillTime(item) * count;
 
   Draw.mixcol(Color.darkGray, 1);
@@ -159,14 +159,14 @@ let drill = extend(Drill, "phase-drill", {
    fx, fy, fcolor, fscale, false, Align.left);
  },
 
- drawAreaOres(drillTileMap, x, y, rotation, valid) {
+ drawAreaOres(drillTileMap, x, y, rotation, valid) {//根据矿物种类绘制不同颜色的区域覆盖，并且根据valid参数调整颜色明暗
   let rect = this.getRect(Tmp.r1, x, y, rotation);
   let color = valid ? Pal.accent : Pal.remove;
 
   Drawf.dashRect(color, rect);
 
   let mix = 0.8 + Mathf.absin(Time.globalTime, 12, 0.6);
-  drillTileMap.each((item, tiles) => {
+  drillTileMap.each((item, tiles) => {//根据矿物种类绘制不同颜色的区域覆盖
    Draw.color(Color.white, 0.5);
    Draw.mixcol(item.color, mix);
 

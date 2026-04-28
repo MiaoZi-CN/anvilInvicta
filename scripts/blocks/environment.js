@@ -73,7 +73,7 @@ Object.assign(marble, {
 const bedrock = new Floor("bedrock", 0);
 
 
-function Shader(name) {
+function Shader(name) {//着色器！
  let shaders = Vars.mods.locateMod("ai").root.child("shaders");
  let s = new Shaders.SurfaceShader(Shaders.getShaderFi("screenspace.vert").readString(), shaders.child(name + ".frag").readString());
  let m = new CacheLayer.ShaderLayer(s);
@@ -90,6 +90,7 @@ Object.assign(rainbow, {
 const abyss = new Floor("abyss", 0);
 Object.assign(abyss, {
  cacheLayer: Shader("pit"),
+ canShadow: false,
  solid: true,
  placeableOn: false,
 });
@@ -99,12 +100,9 @@ Object.assign(waterPit, {
  liquidDrop: Liquids.water,
  cacheLayer: Shader("water-pit"),
  liquidMultiplier: 8,
+ canShadow: false,
  buildVisibility: BuildVisibility.shown,
  category: Category.effect,
- requirements: ItemStack.with(
-  Items.graphite, 40,
-  Items.titanium, 120,
- ),
 });
 
 const spaceDeck1 = new Floor("space-deck1");
@@ -114,10 +112,6 @@ Object.assign(spaceDeck1, {
  drawEdgeIn: false,
  buildVisibility: BuildVisibility.shown,
  category: Category.effect,
- requirements: ItemStack.with(
-  Items.graphite, 50,
-  Items.titanium, 50,
- ),
 })
 
 const spaceDeck2 = new Floor("space-deck2");
@@ -127,20 +121,25 @@ Object.assign(spaceDeck2, {
  drawEdgeIn: false,
  buildVisibility: BuildVisibility.shown,
  category: Category.effect,
- requirements: ItemStack.with(
-  Items.graphite, 50,
-  Items.titanium, 50,
- ),
 })
 
+const spaceCoreDeck1 = new Floor("space-core-deck1");
+Object.assign(spaceCoreDeck1, {
+ variants: 0,
+ drawEdgeOut: false,
+ drawEdgeIn: false,
+ allowCorePlacement: true,
+ buildVisibility: BuildVisibility.shown,
+ category: Category.effect,
+})
+
+
+const blackTop = new TiledFloor("black-top-");
+Object.assign(blackTop,{
+    speedMultiplier:1.25,
+    dragMultiplier:1.25,
+})
 /*
-const blackTop1 = new Floor("black top");
-Object.assign(blackTop1,{
-    speedMultiplier:1.5,
-    dragMultiplier:1.5,
-    variants: 0
-})
-
 const blackTop2 = new Floor("blackTop-white-2");
 Object.assign(blackTop2,{
     speedMultiplier:1.3,
