@@ -73,7 +73,7 @@ Object.assign(marble, {
 const bedrock = new Floor("bedrock", 0);
 
 
-function Shader(name) {//着色器！
+function setShader(name) {//着色器！
  let shaders = Vars.mods.locateMod("ai").root.child("shaders");
  let s = new Shaders.SurfaceShader(Shaders.getShaderFi("screenspace.vert").readString(), shaders.child(name + ".frag").readString());
  let m = new CacheLayer.ShaderLayer(s);
@@ -84,12 +84,12 @@ function Shader(name) {//着色器！
 const rainbow = new Floor("rainbow", 0);
 Object.assign(rainbow, {
  liquidDrop: Liquids.water,
- cacheLayer: Shader("rrrrrainbow"),
+ cacheLayer: setShader("rrrrrainbow"),
 });
 
 const abyss = new Floor("abyss", 0);
 Object.assign(abyss, {
- cacheLayer: Shader("pit"),
+ cacheLayer: setShader("pit"),
  canShadow: false,
  solid: true,
  placeableOn: false,
@@ -98,11 +98,9 @@ Object.assign(abyss, {
 const waterPit = new Floor("water-pit", 0);
 Object.assign(waterPit, {
  liquidDrop: Liquids.water,
- cacheLayer: Shader("water-pit"),
+ cacheLayer: setShader("water-pit"),
  liquidMultiplier: 8,
  canShadow: false,
- buildVisibility: BuildVisibility.shown,
- category: Category.effect,
 });
 
 const spaceDeck1 = new Floor("space-deck1");
@@ -110,8 +108,6 @@ Object.assign(spaceDeck1, {
  variants: 0,
  drawEdgeOut: false,
  drawEdgeIn: false,
- buildVisibility: BuildVisibility.shown,
- category: Category.effect,
 })
 
 const spaceDeck2 = new Floor("space-deck2");
@@ -119,8 +115,6 @@ Object.assign(spaceDeck2, {
  variants: 0,
  drawEdgeOut: false,
  drawEdgeIn: false,
- buildVisibility: BuildVisibility.shown,
- category: Category.effect,
 })
 
 const spaceCoreDeck1 = new Floor("space-core-deck1");
@@ -129,15 +123,50 @@ Object.assign(spaceCoreDeck1, {
  drawEdgeOut: false,
  drawEdgeIn: false,
  allowCorePlacement: true,
- buildVisibility: BuildVisibility.shown,
- category: Category.effect,
 })
 
 
-const blackTop = new TiledFloor("black-top-");
-Object.assign(blackTop,{
-    speedMultiplier:1.25,
-    dragMultiplier:1.25,
+const blackTop = new TiledFloor("black-top");
+Object.assign(blackTop, {
+ speedMultiplier: 1.25,
+ dragMultiplier: 1.25,
+})
+
+//iridescentAlgaeBlue
+const iridescentAlgaeBlue = new SeaBush("iridescent-algae-blue");
+Object.assign(iridescentAlgaeBlue, {
+ lobesMin: 1,
+ lobesMax: 3,
+ magMax: 8,
+ magMin: 2,
+ origin: 0.3,
+ spread: 40,
+ sclMin: 60,
+ sclMax: 100
+})
+//iridescentAlgaeGreen
+const iridescentAlgaeGreen = new SeaBush("iridescent-algae-green");
+Object.assign(iridescentAlgaeGreen, {
+ lobesMin: 1,
+ lobesMax: 1,
+ magMax: 8,
+ magMin: 2,
+ origin: 0.3,
+ spread: 40,
+ sclMin: 60,
+ sclMax: 100
+})
+//iridescentAlgaeRed
+const iridescentAlgaeRed = new SeaBush("iridescent-algae-red");
+Object.assign(iridescentAlgaeRed, {
+ lobesMin: 1,
+ lobesMax: 2,
+ magMax: 8,
+ magMin: 2,
+ origin: 0.3,
+ spread: 40,
+ sclMin: 60,
+ sclMax: 100
 })
 /*
 const blackTop2 = new Floor("blackTop-white-2");

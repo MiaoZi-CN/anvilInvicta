@@ -7,9 +7,9 @@ Object.assign(alpha, {
  cost: 3.5,
  radioactivity: 0,
  explosiveness: 0.2,
- flammability: 1.6,
+ flammability: 1.8,
  hardness: 4,
- charge: 0,
+ charge: 0.2,
  alwaysUnlocked: true,
 });
 
@@ -45,7 +45,7 @@ Object.assign(vibrantAlloy, {
  explosiveness: 0,
  flammability: 0,
  hardness: 7,
- charge: 0.35,
+ charge: 1.4,
  alwaysUnlocked: true,
 });
 
@@ -53,7 +53,7 @@ const glassSteel = new Item('glass-steel', Color.valueOf('#AFEFF3FF'));
 exports.glassSteel = glassSteel;
 Object.assign(glassSteel, {
  cost: 4,
- radioactivity: 0.4,
+ radioactivity: 0.05,
  explosiveness: 0,
  flammability: 0.05,
  hardness: 5,
@@ -72,11 +72,26 @@ Object.assign(laindrium, {
  charge: 0.2,
  alwaysUnlocked: true,
 });
+
+const phaseCoreEnergy = new Item('phase-core-energy', Color.valueOf('#FFE9D1FF'));
+exports.phaseCoreEnergy = phaseCoreEnergy;
+Object.assign(phaseCoreEnergy, {
+ cost: 0,
+ radioactivity: 0,
+ explosiveness: 4,
+ flammability: 2,
+ hardness: 0,
+ charge: 2,
+ alwaysUnlocked: true,
+});
+
 //const chip = new Item('chip', Color.valueOf('#6E7080FF'));
-
-const wiredGlass = new Item('wired-glass', Color.valueOf('#FFFFFFFF'));
+//structure
+const wiredGlass = new Item('wired-glass', Color.valueOf('#ffffffff'));
 exports.wiredGlass = wiredGlass;
-
+const structure = new Item('structure', Color.valueOf('#E0E9FFFF'));
+structure.cost = 2,
+exports.structure = structure;
 const chip = extend(Item, "chip", {
  color: Color.valueOf('#6E7080FF'),
  compute: 30,
@@ -86,6 +101,7 @@ const chip = extend(Item, "chip", {
  }
 });
 exports.chip = chip;
+
 const viaonChip = extend(Item, "viaon-chip", {
  color: Color.valueOf('#D99F6BFF'),
  compute: 1500,
@@ -95,6 +111,7 @@ const viaonChip = extend(Item, "viaon-chip", {
  }
 });
 exports.viaonChip = viaonChip;
+
 const crystalProcessor = extend(Item, "crystal-processor", {
  color: Color.valueOf('#0A9EFFFF'),
  compute: 90000,
@@ -104,3 +121,14 @@ const crystalProcessor = extend(Item, "crystal-processor", {
  }
 });
 exports.crystalProcessor = crystalProcessor;
+
+exports.dirac = dirac;
+const dirac = extend(Item, "dirac", {
+ color: Color.valueOf('#6CDB58FF'),
+ compute: 720000,
+ setStats() {
+  this.super$setStats();
+  this.stats.add(Stat("computeTier"), this.compute);//算力！
+ }
+});
+exports.dirac = dirac;

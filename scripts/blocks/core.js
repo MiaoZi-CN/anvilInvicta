@@ -44,7 +44,7 @@ const prismCore = extend(CoreBlock, 'prism-core'/*方块名*/, {
  health: 800,
  size: 3,
  itemCapacity: 24000,
- insulated: true,
+ insulated: false,
  absorbLasers: true,
  setStats() {
   this.super$setStats();

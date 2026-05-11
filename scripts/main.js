@@ -11,8 +11,9 @@ require("blocks/wall");
 require("blocks/distribution");
 require("blocks/turret");
 
-require("blocks/pulsetype");
 require("blocks/miner");
+require("blocks/pulsetype");
+
 
 require("blocks/power");
 require("blocks/product");

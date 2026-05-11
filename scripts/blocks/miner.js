@@ -1,3 +1,48 @@
+const resonantDrill = extend(Drill, "resonant-drill", {
+ size: 2,
+ scaledHealth: 50,
+ armor: 0,
+ tier: 3,
+ buildCostMultiplier: 0.8,
+ drillTime: 350 / 2.56,
+ liquidBoostIntensity: 1,
+ hardnessDrillMultiplier: 0,
+ hasLiquids: false,
+ category: Category.production,
+ buildVisibility: BuildVisibility.shown,
+ requirements: ItemStack.with(
+  Items.titanium, 20,
+ ),
+ loadIcon() {//获取图标
+  this.super$loadIcon();
+  this.fullIcon = this.uiIcon = Core.atlas.find(this.name + "-full");
+ },
+});//ConsumeLiquid
+//resonantDrill.consumeLiquid().booster = false;//不显示boost
+
+resonantDrill.buildType = () => extend(Drill.DrillBuild, resonantDrill, {
+ draw() {
+  //  this.super$draw();
+  const { block, x, y, team } = this;
+
+  let alpha = 0.75 + Mathf.sin(Time.globalTime * (0.4 / 5)) * 0.25;
+  // 设置颜色时使用这个alpha值
+  Draw.color(team.color.r, team.color.g, team.color.b, alpha);
+  Drawf.light(this.x, this.y, 40, team.color, 1.0);
+  Draw.rect(Core.atlas.find(block.name + "-bottom"), x, y,);
+  Draw.reset();
+  Draw.rect(Core.atlas.find(block.name + "-top"), x, y);
+
+ }
+});
+
+
+
+
+
+
+
+
 const statValueImpl = (cons) => new StatValue(){ display: cons };//语法糖有没有很香
 
 const multiEfficientCoolant = extend(ConsumeLiquidFilter,
@@ -19,7 +64,9 @@ const drill = extend(Drill, "fast-drill", {
  tier: 6,
  buildCostMultiplier: 0.8,
  liquidBoostIntensity: 1.6,
+ hardnessDrillMultiplier: 25,
  hasPower: true,
+ drillTime: 280,
  setStats() {//stat部分，显示多液体效率
   this.super$setStats();
 
@@ -74,3 +121,4 @@ function multiCoolantStatValue(unit, amount, speedProv, strength, filter) {//显
   table.row();
  });
 }
+

@@ -51,7 +51,7 @@ Object.assign(arklight, {
  inaccuracy: 0,
  reload: 30,
  hasPower: true,
- shootSound: Vars.tree.loadSound("L9"),
+ shootSound: Vars.tree.loadSound("laser1"),
  liquidCapacity: 24,
  rotateSpeed: 25,
  range: 160,
@@ -73,16 +73,18 @@ Object.assign(arklight, {
   shootEffect: new MultiEffect(
    Object.assign(new ParticleEffect(), {
     offset: 8,
-    particles: 4,
-    lifetime: 30,
+    particles: 7,
+    lifetime: 48,
     length: 32,
-    interp: Interp.circleOut,
-    sizeInterp: Interp.pow5In,
-    cone: 20,
+    //    interp: Interp.circleOut,
+    //    sizeInterp: Interp.pow5In,
+    cone: 15,
     line: true,
     strokeFrom: 0.8,
     strokeTo: 0.8,
-    lenFrom: 4,
+    sizeFrom: 1.2,
+    sizeTo: 0,
+    lenFrom: 13,
     lenTo: 0,
     lightColor: Color.valueOf("#A4B8FAFF"),
     colorFrom: Color.valueOf("#A4B8FAFF"),
@@ -120,8 +122,8 @@ Object.assign(arklight, {
  buildVisibility: BuildVisibility.shown,
  category: Category.turret,
  requirements: ItemStack.with(
-  Items.silicon, 20,
-  Items.metaglass, 10)
+  Items.silicon, 30,
+  Items.metaglass, 30)
 })
 arklight.consumePower(3);
 AddCoolant(arklight, 0.2)
@@ -155,7 +157,7 @@ Object.assign(cersei, {
   backColor: Color.valueOf("#E1EFFFFF"),
   frontColor: Color.valueOf("#FFFFFFFF"),
   sprite: "large-orb",
-  status: status.EMP,
+  status: StatusEffects.electrified,
   splashDamage: 48,
   splashDamageRadius: 3,
   fragVelocityMin: 0.5,
@@ -223,7 +225,7 @@ Object.assign(cersei, {
    })),
   buildingDamageMultiplier: 0.4,
   intervalBullet: Object.assign(new LightningBulletType(), {
-   status: status.EMP,
+   status: StatusEffects.electrified,
    lightningLength: 3,
    lightningColor: Color.valueOf("#E1EFFFFF"),
    damage: 4,
@@ -836,7 +838,7 @@ Object.assign(skynet, {
  targetGround: false,
  targetAir: true,
  rotateSpeed: 6,
- shootSound: Vars.tree.loadSound("missile2"),
+ shootSound: Vars.tree.loadSound("shoot2"),
  shoot: Object.assign(new ShootBarrel, {
   shots: 3,
   shotDelay: 3,
@@ -846,7 +848,8 @@ Object.assign(skynet, {
  buildVisibility: BuildVisibility.shown,
  category: Category.turret,
  requirements: ItemStack.with(
-  Items.titanium, 110,
+  Items.titanium, 180,
+  Items.graphite, 100,
   items.chip, 65
  ),
  alwaysUnlocked: false,
@@ -864,14 +867,14 @@ AddCoolant(skynet, 0.2);
 
 // 添加弹药类型
 skynet.ammo(
- Items.graphite, Object.assign(new BasicBulletType(12, 28), {
+ Items.graphite, Object.assign(new BasicBulletType(12, 38), {
   trailLength: 4,
   trailColor: Color.valueOf("#7d89d8ff"),
   backColor: Color.valueOf("#7d89d8ff"),
   frontColor: Color.valueOf("#dae1eeff"),
   mixColorFrom: Color.valueOf("#ffffff00"),
   mixColorTo: Color.valueOf("#ffffff00"),
-  reloadMultiplier: 0.85,
+  reloadMultiplier: 0.75,
   lifetime: 24,
   width: 8,
   height: 12,
@@ -897,7 +900,7 @@ skynet.ammo(
    sizeTo: 0
   })
  }),
- Items.titanium, Object.assign(new BasicBulletType(12, 25), {
+ Items.titanium, Object.assign(new BasicBulletType(12, 35), {
   trailLength: 4,
   lifetime: 24,
   width: 8,
@@ -929,13 +932,13 @@ skynet.ammo(
    sizeTo: 0
   })
  }),
- Items.plastanium, Object.assign(new BasicBulletType(12, 30), {
+ Items.plastanium, Object.assign(new BasicBulletType(12, 40), {
   trailLength: 4,
   lifetime: 24,
   width: 8,
   height: 12,
   hitSize: 12,
-  reloadMultiplier: 0.9,
+  reloadMultiplier: 0.8,
   trailColor: Color.valueOf("#9CB664FF"),
   backColor: Color.valueOf("#9CB664FF"),
   frontColor: Color.valueOf("#dae1eeff"),
@@ -972,7 +975,7 @@ skynet.ammo(
    sizeTo: 0
   })
  }),
- items.alpha, Object.assign(new BasicBulletType(12, 28), {
+ items.alpha, Object.assign(new BasicBulletType(12, 38), {
   status: status.alphaBurning,
   statusDuration: 150,
   trailLength: 4,
@@ -982,7 +985,7 @@ skynet.ammo(
   width: 8,
   height: 12,
   hitSize: 12,
-  reloadMultiplier: 0.9,
+  reloadMultiplier: 0.75,
   trailColor: Color.valueOf("#FF5B5BFF"),
   backColor: Color.valueOf("#FF5B5BFF"),
   frontColor: Color.valueOf("#ffffff"),
@@ -1073,7 +1076,7 @@ skynet.ammo(
    sizeTo: 0
   })
  }),
- Items.thorium, Object.assign(new BasicBulletType(12, 40), {
+ Items.thorium, Object.assign(new BasicBulletType(12, 44), {
   trailLength: 4,
   lifetime: 24,
   width: 8,
@@ -1094,7 +1097,7 @@ skynet.ammo(
   knockback: 2,
   pierce: true,
   pierceCap: 2,
-  reloadMultiplier: 0.8,
+  reloadMultiplier: 0.75,
   shootEffect: Object.assign(new ParticleEffect(), {
    particles: 2,
    length: 25,

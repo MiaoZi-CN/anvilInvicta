@@ -1,5 +1,181 @@
 var items = Stat("items");
 
+const metaglassConveyor = new Conveyor("metaglass-conveyor");
+exports.metaglassConveyor = metaglassConveyor;
+Object.assign(metaglassConveyor, {
+ health: 10,
+ itemCapacity: 3,
+ speed: 0.15,
+ displayedSpeed: 22.5,
+ placeableLiquid: true,
+ buildVisibility: BuildVisibility.shown,
+ category: Category.distribution,
+ requirements: ItemStack.with(
+  Items.titanium, 1,
+  Items.graphite, 1,
+ )
+})
+
+
+const fluxRail = extend(Duct, "flux-rail", {//光速轨，很帅！
+ health: 200,
+ armor: 2,
+ size: 1,
+ speed: 60 / 30,
+ itemCapacity: 1,
+ update: true,
+ buildVisibility: BuildVisibility.shown,
+ category: Category.distribution,
+ placeableLiquid: true,
+ hasPower: true,
+ consumesPower: false,
+ outputsPower: true,
+ conductivePower: true,
+
+ requirements: ItemStack.with(
+  Items.silicon, 2
+ ),
+
+ loadIcon() {//获取图标
+  this.super$loadIcon();
+  this.fullIcon = this.uiIcon = Core.atlas.find(this.name + "-full");
+ },
+ drawPlanRegion(plan, list) {//放置计划预览
+  this.drawDefaultPlanRegion(plan, list);
+ },
+ setStats() {//stat部分，继承直线传送，防止二愣子玩家以为这个东西和普通轨道一样了
+  this.super$setStats();
+  this.stats.add(Stat("straight"), true)
+ },
+})
+
+fluxRail.buildType = () =>
+ extend(Duct.DuctBuild, fluxRail, {
+  progress: 0,
+  capped: false,
+  backCapped: false,
+
+  draw() {
+   const { x, y, rotation, current: item, block, progress, team } = this;//结构化赋值，简化代码
+   let teamColor = team.color;
+   const lastZ = Draw.z();
+   Draw.z(lastZ - 0.1);
+
+   if (rotation == 2 || rotation == 0) {
+    //左和右
+    Draw.rect(Core.atlas.find(block.name + "-x"), x, y);
+   } else {//上和下
+    Draw.rect(Core.atlas.find(block.name + "-y"), x, y);
+   }//类似我的世界的贴图，分为横竖两种情况，就像木头一样是不是很聪明？喂，你们这些美术设计师是不是觉得分两种情况更好看啊？（虽然我也觉得分两种情况更好看，美术设计也是我）
+
+   Draw.z(lastZ - 0.09);
+    if (item != null) {
+         const itemSize = 4;
+    const padding = itemSize;
+     const dir = Geometry.d4[Mathf.mod(rotation, 4)];//根据旋转方向获取单位向量
+     const offset = Tmp.v1.set(dir.x, dir.y).scl(block.size * Vars.tilesize / 2)
+      .add(padding * dir.x, padding * dir.y).scl(Mathf.clamp(progress) - 0.5);
+     // 变化的alpha值
+     let alpha = 0.6 + Mathf.sin(Time.globalTime * 0.3) * 0.2;
+     // 设置颜色时使用这个alpha值
+     //    Draw.color(255, 255, 255, alpha); 丢掉使用颜色
+     Draw.alpha(alpha);
+     //     Drawf.light(this.x, this.y, 40, Pal.accent, 1.0);
+     Draw.rect(item.fullIcon, x + offset.x, y + offset.y, itemSize, itemSize);
+     Draw.reset();
+    }
+
+   //头疼的绘制
+   // 水平方向 (左=2, 下=3) 使用 cap2 作为前端，cap1 作为后端
+   //cpa1较亮cpa2较暗，cap1作为上右端更好明亮，所以左和下使用cap2作为前端
+   if (this.capped && (rotation == 2 || rotation == 3)) {
+    Draw.rect(Core.atlas.find(block.name + "-cap2"), x, y, rotation * 90);
+   }
+   if (this.backCapped && (rotation == 2 || rotation == 3)) {
+    Draw.rect(Core.atlas.find(block.name + "-cap1"), x, y, rotation * 90 + 180);
+   }
+
+   // 竖直方向 (上=1, 右=1) 使用 cap1 作为前端，cap2 作为后端
+   if (this.capped && (rotation == 0 || rotation == 1)) {
+    Draw.rect(Core.atlas.find(block.name + "-cap1"), x, y, rotation * 90);
+   }
+   if (this.backCapped && (rotation == 0 || rotation == 1)) {
+    Draw.rect(Core.atlas.find(block.name + "-cap2"), x, y, rotation * 90 + 180);
+   }
+   // 变化的alpha值
+   let alpha = 0.6 + Mathf.sin(Time.globalTime * 0.4) * 0.2;
+   // 设置颜色时使用这个alpha值
+   Draw.color(teamColor.r, teamColor.g, teamColor.b, alpha);
+   Drawf.light(x, y, 40, teamColor, 1.0);
+   Draw.rect(Core.atlas.find(block.name + "-top"), x, y, rotation * 90);
+   Draw.reset();
+
+   Draw.z(lastZ);
+  },
+
+  acceptItem(source, item) {//重写acceptItem方法，只有当前没有物品且来源是正确的方向时才接受物品，实现所谓的直线传送
+   const { current, items, rotation } = this;
+   return current == null && items.total() == 0 && source.relativeTo(this) == rotation;
+  },
+
+  onProximityUpdate() {//每当附近的块发生变化时都会调用这个方法，来更新capped和backCapped状态
+   this.super$onProximityUpdate();
+
+   const { team } = this;
+   let next = this.front(), prev = this.back();
+   this.capped = next == null || next.team != team || !next.block.hasItems;//我很天才吧？
+   this.backCapped = prev == null || prev.team != team || !prev.block.hasItems;//同上！
+  },
+
+  updateTile() {
+   const { block, items } = this;
+   const { speed } = block;
+   this.progress += this.edelta() / speed * 2;//速度调整
+
+   if (this.current == null && items.total() > 0) {//如果当前没有物品但是有物品了，拿出第一个物品放到当前物品内
+    this.current = items.first();
+   }
+
+   const { current, progress, next } = this;
+   if (current != null && next != null) {
+    if (progress >= (1 - 1 / speed) && this.moveForward(current)) {//进度达到1时尝试推进物品，如果成功了就把物品移除，当前物品置空，进度取模保持连续
+     items.remove(current, 1);
+     this.current = null;
+     this.progress %= (1 - 1 / speed);
+
+     if (next.block === block) {//如果下一个也是同样的轨道，直接把进度传递过去，保持物品连续平滑移动
+      next.progress = this.progress;
+      this.progress = 0;
+     }
+    }
+   }
+  }
+ });
+exports.fluxRail = fluxRail;
+
+
+const fluxRailJunction = new Junction("flux-rail-junction");
+exports.fluxRailJunction = fluxRailJunction;
+Object.assign(fluxRailJunction, {
+ squareSprite: false,
+ health: 100,
+ speed: 60 / 40,
+ displayedSpeed: 30,
+ capacity: 2,
+ buildCostMultiplier: 4,
+ buildVisibility: BuildVisibility.shown,
+ category: Category.distribution,
+ placeableLiquid: true,
+ hasPower: true,
+ hasItems: true,
+ consumesPower: false,
+ outputsPower: true,
+ conductivePower: true,
+ requirements: ItemStack.with(
+  Items.silicon, 10,
+  Items.graphite, 10,
+ )
+})
 
 global.Filter = function (name) {
  var m = Object.assign(extend(GenericCrafter, name, {
@@ -168,141 +344,7 @@ stackBridge.category = Category.distribution;
 
 exports.stackBridge = stackBridge;
 
-const fluxRail = extend(Duct, "flux-rail", {//光速轨，很帅！
- health: 200,
- armor: 2,
- size: 1,
- speed: 60 / 30,
- itemCapacity: 1,
- update: true,
- buildVisibility: BuildVisibility.shown,
- category: Category.distribution,
- placeableLiquid: true,
- hasPower: true,
- consumesPower: false,
- outputsPower: true,
- conductivePower: true,
 
- requirements: ItemStack.with(
-  Items.silicon, 2
- ),
-
- loadIcon() {//获取图标
-  this.super$loadIcon();
-  this.fullIcon = this.uiIcon = Core.atlas.find(this.name + "-full");
- },
- drawPlanRegion(plan, list) {//放置计划预览
-  this.drawDefaultPlanRegion(plan, list);
- },
- setStats() {//stat部分，继承直线传送，防止二愣子玩家以为这个东西和普通轨道一样了
-  this.super$setStats();
-  this.stats.add(Stat("straight"), true)
- },
-})
-
-fluxRail.buildType = () =>
- extend(Duct.DuctBuild, fluxRail, {
-  progress: 0,
-  capped: false,
-  backCapped: false,
-
-  draw() {
-   const { x, y, rotation, current: item, block, progress, team } = this;//结构化赋值，简化代码
-   let teamColor = team.color;
-   const lastZ = Draw.z();
-   Draw.z(lastZ - 0.1);
-
-   if (rotation == 2 || rotation == 0) {
-    //左和右
-    Draw.rect(Core.atlas.find(block.name + "-x"), x, y);
-   } else {//上和下
-    Draw.rect(Core.atlas.find(block.name + "-y"), x, y);
-   }//类似我的世界的贴图，分为横竖两种情况，就像木头一样是不是很聪明？喂，你们这些美术设计师是不是觉得分两种情况更好看啊？（虽然我也觉得分两种情况更好看，美术设计也是我）
-
-   Draw.z(lastZ - 0.09);
-    if (item != null) {
-         const itemSize = 4;
-    const padding = itemSize;
-     const dir = Geometry.d4[Mathf.mod(rotation, 4)];//根据旋转方向获取单位向量
-     const offset = Tmp.v1.set(dir.x, dir.y).scl(block.size * Vars.tilesize / 2)
-      .add(padding * dir.x, padding * dir.y).scl(Mathf.clamp(progress) - 0.5);
-     // 变化的alpha值
-     let alpha = 0.6 + Mathf.sin(Time.globalTime * 0.3) * 0.2;
-     // 设置颜色时使用这个alpha值
-     //    Draw.color(255, 255, 255, alpha); 丢掉使用颜色
-     Draw.alpha(alpha);
-     //     Drawf.light(this.x, this.y, 40, Pal.accent, 1.0);
-     Draw.rect(item.fullIcon, x + offset.x, y + offset.y, itemSize, itemSize);
-     Draw.reset();
-    }
-
-   //头疼的绘制
-   // 水平方向 (左=2, 下=3) 使用 cap2 作为前端，cap1 作为后端
-   //cpa1较亮cpa2较暗，cap1作为上右端更好明亮，所以左和下使用cap2作为前端
-   if (this.capped && (rotation == 2 || rotation == 3)) {
-    Draw.rect(Core.atlas.find(block.name + "-cap2"), x, y, rotation * 90);
-   }
-   if (this.backCapped && (rotation == 2 || rotation == 3)) {
-    Draw.rect(Core.atlas.find(block.name + "-cap1"), x, y, rotation * 90 + 180);
-   }
-
-   // 竖直方向 (上=1, 右=1) 使用 cap1 作为前端，cap2 作为后端
-   if (this.capped && (rotation == 0 || rotation == 1)) {
-    Draw.rect(Core.atlas.find(block.name + "-cap1"), x, y, rotation * 90);
-   }
-   if (this.backCapped && (rotation == 0 || rotation == 1)) {
-    Draw.rect(Core.atlas.find(block.name + "-cap2"), x, y, rotation * 90 + 180);
-   }
-   // 变化的alpha值
-   let alpha = 0.6 + Mathf.sin(Time.globalTime * 0.4) * 0.2;
-   // 设置颜色时使用这个alpha值
-   Draw.color(teamColor.r, teamColor.g, teamColor.b, alpha);
-   Drawf.light(x, y, 40, teamColor, 1.0);
-   Draw.rect(Core.atlas.find(block.name + "-top"), x, y, rotation * 90);
-   Draw.reset();
-
-   Draw.z(lastZ);
-  },
-
-  acceptItem(source, item) {//重写acceptItem方法，只有当前没有物品且来源是正确的方向时才接受物品，实现所谓的直线传送
-   const { current, items, rotation } = this;
-   return current == null && items.total() == 0 && source.relativeTo(this) == rotation;
-  },
-
-  onProximityUpdate() {//每当附近的块发生变化时都会调用这个方法，来更新capped和backCapped状态
-   this.super$onProximityUpdate();
-
-   const { team } = this;
-   let next = this.front(), prev = this.back();
-   this.capped = next == null || next.team != team || !next.block.hasItems;//我很天才吧？
-   this.backCapped = prev == null || prev.team != team || !prev.block.hasItems;//同上！
-  },
-
-  updateTile() {
-   const { block, items } = this;
-   const { speed } = block;
-   this.progress += this.edelta() / speed * 2;//速度调整
-
-   if (this.current == null && items.total() > 0) {//如果当前没有物品但是有物品了，拿出第一个物品放到当前物品内
-    this.current = items.first();
-   }
-
-   const { current, progress, next } = this;
-   if (current != null && next != null) {
-    if (progress >= (1 - 1 / speed) && this.moveForward(current)) {//进度达到1时尝试推进物品，如果成功了就把物品移除，当前物品置空，进度取模保持连续
-     items.remove(current, 1);
-     this.current = null;
-     this.progress %= (1 - 1 / speed);
-
-     if (next.block === block) {//如果下一个也是同样的轨道，直接把进度传递过去，保持物品连续平滑移动
-      next.progress = this.progress;
-      this.progress = 0;
-     }
-    }
-   }
-  }
- });
-exports.fluxRail = fluxRail;
 
 
 
@@ -316,45 +358,9 @@ Object.assign(fluxRail, {
 })*/
 //传送带计算公式RealSpeed = 2.5*60*speed = 150speed
 
-const fluxRailJunction = new Junction("flux-rail-junction");
-exports.fluxRailJunction = fluxRailJunction;
-Object.assign(fluxRailJunction, {
- squareSprite: false,
- health: 100,
- speed: 60 / 40,
- displayedSpeed: 30,
- capacity: 2,
- buildCostMultiplier: 4,
- buildVisibility: BuildVisibility.shown,
- category: Category.distribution,
- placeableLiquid: true,
- hasPower: true,
- hasItems: true,
- consumesPower: false,
- outputsPower: true,
- conductivePower: true,
- requirements: ItemStack.with(
-  Items.silicon, 10,
-  Items.graphite, 10,
- )
-})
 
 
-const metaglassConveyor = new Conveyor("metaglass-conveyor");
-exports.metaglassConveyor = metaglassConveyor;
-Object.assign(metaglassConveyor, {
- health: 10,
- itemCapacity: 3,
- speed: 0.15,
- displayedSpeed: 22.5,
- placeableLiquid: true,
- buildVisibility: BuildVisibility.shown,
- category: Category.distribution,
- requirements: ItemStack.with(
-  Items.titanium, 1,
-  Items.graphite, 1,
- )
-})
+
 
 const routerKing = extend(Router, "router-king", {
  size: 16,
@@ -362,7 +368,7 @@ const routerKing = extend(Router, "router-king", {
  armor: 500000,
  speed: 1 / 600,
  itemCapacity: 500000,
- buildVisibility: BuildVisibility.shown,
+ buildVisibility: BuildVisibility.sandboxOnly,
  category: Category.distribution,
  underBullets: false,
  requirements: ItemStack.with(

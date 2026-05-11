@@ -177,7 +177,7 @@ photovoltaicModule.buildType = () =>
 const tetradCrackingEngine = new ConsumeGenerator("tetrad-cracking-engine");
 exports.tetradCrackingEngine = tetradCrackingEngine;
 Object.assign(tetradCrackingEngine, {
- powerProduction: 620 / 60,
+ powerProduction: 840 / 60,
  hasLiquids: true,
  size: 2,
  generateEffect: Fx.generatespark,
@@ -185,9 +185,11 @@ Object.assign(tetradCrackingEngine, {
  // outputLiquid: new LiquidStack(Liquids.cyanogen, 1 / 120),
  //outputItem: new ItemStack(Items.pyratite, 1),
  canOverdrive: false,
- ambientSound: Sounds.loopSmelter,
+ ambientSound: Vars.tree.loadSound("ray1"),
  ambientSoundVolume: 0.06,
  liquidCapacity: 30,
+ itemCapacity: 6,
+ buildTime: 35,
  drawer: new DrawMulti(
   new DrawRegion("-bottom"),
   Object.assign(new DrawLiquidTile(Liquids.water), {
@@ -195,23 +197,27 @@ Object.assign(tetradCrackingEngine, {
   Object.assign(new DrawArcSmelt(), {
    midColor: Color.valueOf("#9CC5FFFF"),
    flameColor: Color.valueOf("#C9DFFFFF"),
+   flameRad: 2,
+   flameRadiusScl: 3,
+   flameRadiusMag: 0.4,
   }),
   new DrawDefault(),
  ),
  category: Category.power,
  buildVisibility: BuildVisibility.shown,
  requirements: ItemStack.with(
-  Items.titanium, 30,
+  Items.titanium, 45,
   Items.silicon, 30,
+  Items.metaglass, 30,
  ),
 })
 tetradCrackingEngine.consumeLiquid(Liquids.water, 12 / 60,)
-tetradCrackingEngine.consumeItem(Items.graphite, 2)
+tetradCrackingEngine.consumeItems(ItemStack.with(Items.graphite, 1, Items.copper, 1))
 
 const chemoRingEngine = new ImpactReactor("chemo-ring-engine");
 exports.chemoRingEngine = chemoRingEngine;
 Object.assign(chemoRingEngine, {
- powerProduction: 42,
+ powerProduction: 54,
  hasLiquids: true,
  size: 3,
  canOverdrive: false,

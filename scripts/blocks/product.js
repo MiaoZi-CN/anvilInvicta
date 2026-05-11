@@ -122,10 +122,10 @@ exports.photoetchingMachine = photoetchingMachine;
 Object.assign(photoetchingMachine, {
  health: 480,
  size: 2,
- itemCapacity: 10,
+ itemCapacity: 20,
  liquidCapacity: 0,
  craftTime: 90,
- outputItem: new ItemStack(items.chip, 3),
+ outputItem: new ItemStack(items.chip, 2),
  drawer: new DrawMulti(
   new DrawRegion("-bottom"),
   Object.assign(new DrawArcSmelt(), {}),
@@ -143,7 +143,7 @@ Object.assign(photoetchingMachine, {
 })
 photoetchingMachine.consumePower(4),
  photoetchingMachine.consumeItems(ItemStack.with(
-  Items.titanium, 2,
+  Items.titanium, 1,
   Items.silicon, 1,
   Items.graphite, 1
  ));
