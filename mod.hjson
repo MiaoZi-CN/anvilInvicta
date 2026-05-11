@@ -2,7 +2,7 @@ name: "ai"//内部名
 displayName: "Anvil Invicta"//显示名
 author: "TheParotiaCarolae's past"//作者
 description: "Greed"//简介
-version: 9//模组版本
+version: 10//模组版本
 minGameVersion: 154.2//需求最低版本
 hideBrowser:false
 /*
