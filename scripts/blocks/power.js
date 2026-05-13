@@ -127,52 +127,45 @@ Object.assign(steamHeater, {
 })
 steamHeater.consumeLiquid(fluids.steam, 0.3)
 
-
-
-//光伏单元
-const photovoltaicModule = new SolarGenerator("photovoltaic-module");
-exports.photovoltaicModule = photovoltaicModule;
-Object.assign(photovoltaicModule, {
+//energy-capacitor energyCapacitor
+const energyCapacitor = new Battery("energy-capacitor");
+exports.energyCapacitor = energyCapacitor;
+Object.assign(energyCapacitor, {
+ size: 1,
+ scaledHealth: 200,
+ armor: 2,
+ baseExplosiveness: 1,
+ buildCostMultiplier: 0.8,
+ emptyLightColor: Color.valueOf("#3973C5FF"),
+ fullLightColor: Color.valueOf("#D1EFFFFF"),
+ requirements: ItemStack.with(
+  Items.titanium, 15,
+  Items.silicon, 20,
+  Items.graphite, 20
+ ),
  category: Category.power,
  buildVisibility: BuildVisibility.shown,
- requirements: ItemStack.with(
-  Items.thorium, 5,
-  Items.lead, 5,
-  Items.silicon, 5
- ),
+});
+energyCapacitor.consumePowerBuffered(10000)
+//high-energy-capacitor highEnergyCapacitor
+const highEnergyCapacitor = new Battery("high-energy-capacitor");
+exports.highEnergyCapacitor = highEnergyCapacitor;
+Object.assign(highEnergyCapacitor, {
  size: 1,
- powerProduction: 0.5,
- update: true
-})
-
-photovoltaicModule.buildType = () =>
- extend(SolarGenerator.SolarGeneratorBuild, photovoltaicModule, {
-  draw() {
-   // this.super$draw();
-   let autotileRegions
-   if (!autotileRegions) {
-    autotileRegions = TileBitmask.load(photovoltaicModule.name + "-autotile"); // 贴图多了-autotile，这里也写吧，按理应该删掉-autotile
-   }//我受够了
-   const { x, y } = this;
-   let bits = 0;
-   for (let i = 0; i < 8; i++) {
-    let p = Geometry.d8[i];
-    let other = this.nearby(p.x, p.y);
-    if (other != null && other.block == this.block) {
-     bits |= (1 << i);
-    }
-   }
-   let bit = TileBitmask.values[bits];
-   const region = autotileRegions[bit];
-   Draw.rect(region, x, y);
-   Draw.reset()
-   //  if(){
-   //  Draw.rect(Core.atlas.find("square"), x, this.y - 1);
-   //  Draw.reset()
-   //   }
-  },
- })
-
+ scaledHealth: 400,
+ armor: 4,
+ baseExplosiveness: 3,
+ buildCostMultiplier: 0.8,
+ emptyLightColor: Color.valueOf("#3973C5FF"),
+ fullLightColor: Color.valueOf("#D1EFFFFF"),
+ requirements: ItemStack.with(
+  Items.surgeAlloy, 10,
+  Items.silicon, 20
+ ),
+ category: Category.power,
+ buildVisibility: BuildVisibility.shown,
+});
+highEnergyCapacitor.consumePowerBuffered(200000)
 //氰化高压釜 tetradCrackingEngine
 const tetradCrackingEngine = new ConsumeGenerator("tetrad-cracking-engine");
 exports.tetradCrackingEngine = tetradCrackingEngine;
@@ -310,8 +303,46 @@ Object.assign(chemoRingEngine, {
 chemoRingEngine.consumeLiquid(Liquids.oil, 0.7,)
 chemoRingEngine.consumePower(4)
 //chemoRingEngine.consumeItem(Items.graphite, 1)
-Events.on(EventType.ClientLoadEvent, () => {
- if (Vars.mods.getMod("new-horizon") != null) {
+//光伏单元
+const photovoltaicModule = new SolarGenerator("photovoltaic-module");
+exports.photovoltaicModule = photovoltaicModule;
+Object.assign(photovoltaicModule, {
+ category: Category.power,
+ buildVisibility: BuildVisibility.shown,
+ requirements: ItemStack.with(
+  Items.thorium, 5,
+  Items.lead, 5,
+  Items.silicon, 5
+ ),
+ size: 1,
+ powerProduction: 0.5,
+ update: true
+})
 
- }
-},)
+photovoltaicModule.buildType = () =>
+ extend(SolarGenerator.SolarGeneratorBuild, photovoltaicModule, {
+  draw() {
+   // this.super$draw();
+   let autotileRegions
+   if (!autotileRegions) {
+    autotileRegions = TileBitmask.load(photovoltaicModule.name + "-autotile"); // 贴图多了-autotile，这里也写吧，按理应该删掉-autotile
+   }//我受够了
+   const { x, y } = this;
+   let bits = 0;
+   for (let i = 0; i < 8; i++) {
+    let p = Geometry.d8[i];
+    let other = this.nearby(p.x, p.y);
+    if (other != null && other.block == this.block) {
+     bits |= (1 << i);
+    }
+   }
+   let bit = TileBitmask.values[bits];
+   const region = autotileRegions[bit];
+   Draw.rect(region, x, y);
+   Draw.reset()
+   //  if(){
+   //  Draw.rect(Core.atlas.find("square"), x, this.y - 1);
+   //  Draw.reset()
+   //   }
+  },
+ })

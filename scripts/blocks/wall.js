@@ -21,7 +21,44 @@ Object.assign(armorBlock, {
  category: Category.defense,
  buildVisibility: BuildVisibility.sandboxOnly,
 });
+//titaniumReactionWall 钛合成墙
+const titaniumReactionWall = extend(Wall, "titanium-reaction-wall", {
+ size: 1,
+ health: 340,
+ flashHit: true,
+ buildTime: 1.5,
+ category: Category.defense,
+ buildVisibility: BuildVisibility.shown,
+ requirements: ItemStack.with(
+  Items.titanium, 4,
+ ),
+});
 
+titaniumReactionWall.buildType = () =>
+ extend(Wall.WallBuild, titaniumReactionWall, {
+  draw() {
+   // this.super$draw();
+   let autotileRegions;
+   if (!autotileRegions) {
+    autotileRegions = TileBitmask.load(titaniumReactionWall.name + "-autotile"); // 贴图多了-autotile，这里也写吧，按理应该删掉-autotile
+   }//我受够了
+   const { x, y } = this;
+   let bits = 0;
+   for (let i = 0; i < 8; i++) {
+    let p = Geometry.d8[i];
+    let other = this.nearby(p.x, p.y);
+    if (other != null && other.block == this.block) {
+     bits |= (1 << i);
+    }
+   }
+   let bit = TileBitmask.values[bits];
+   const region = autotileRegions[bit];
+   Draw.rect(region, x, y);
+  },
+ });
+exports.titaniumReactionWall = titaniumReactionWall;
+
+//adamantaneWall 碳素合成墙体
 const adamantaneWall = extend(Wall, "adamantane-wall", {
  size: 1,
  health: 400,
@@ -110,6 +147,7 @@ Events.on(EventType.ClientLoadEvent, () => {
   adamantaneWall.health = 400
  }
 })*/
+//electromagneticWall 电磁反应墙体
 const electromagneticWall = extend(Wall, "electromagnetic-wall", {
  size: 1,
  health: 1800,
@@ -198,6 +236,7 @@ electromagneticWall.buildType = () =>
  });
 
 exports.electromagneticWall = electromagneticWall;
+//compositeWall 塑性合成墙
 const compositeWall = extend(Wall, "composite-wall", {
  size: 2,
  scaledHealth: 1100,
@@ -206,6 +245,7 @@ const compositeWall = extend(Wall, "composite-wall", {
  absorbLasers: true,
  category: Category.defense,
  buildVisibility: BuildVisibility.shown,
+ buildTime: 22,
  requirements: ItemStack.with(
   Items.titanium, 24,
   Items.graphite, 8,
