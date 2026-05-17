@@ -1,6 +1,95 @@
 const fluids = require("fluids");
 const items = require("items");
 var shell = Core.atlas.find("shell")
+//hightech-power-node highTechPowerNode 动力节点
+const particle = new ParticleEffect();
+Object.assign(particle, {
+ particles: 1,
+ sizeTo: 0,
+ sizeFrom: 3,
+ colorTo: Color.valueOf("#ffffff"),
+ colorFrom: Color.valueOf("#A8BDFFFF"),
+ cone: -360,
+ lifetime: 30,
+ layer: 100,
+ length: 36,
+ region: shell,
+ useRotation: false,
+ baseRotation: 0,
+})
+
+const highTechPowerNode = extend(PowerNode, "hightech-power-node", {
+ size: 1,
+ health: 160,
+ buildTime: 0.5,
+ laserRange: 12,
+ maxNodes: 6,
+ update: true,
+ category: Category.power,
+ buildVisibility: BuildVisibility.shown,
+ placeableLiquid: true,
+ selfHeal:10,
+ requirements: ItemStack.with(
+  Items.titanium, 5,
+  Items.silicon, 3,
+ ),
+ setStats() {//stat部分，显示修复速度
+  this.super$setStats();
+  this.stats.add(Stat("selfHeal"), "40");
+ },
+  loadIcon() {//获取图标
+  this.super$loadIcon();
+  this.fullIcon = this.uiIcon = Core.atlas.find(this.name + "-full");
+ },
+});
+
+highTechPowerNode.buildType = () =>
+ extend(PowerNode.PowerNodeBuild, highTechPowerNode, {
+  updateTile() {//电网，这里写不下，去看LMM的消耗器部分，实际上PowerNode本身甚至不需要update，但为了更新自己是属性需要使用update。
+   if (!this.power) return;
+   const graph = this.power.graph;
+   if (!graph) return;
+
+   // 获取当前帧的发电量和需求电量（单位：功率/帧）
+   const produced = graph.getLastPowerProduced();
+   const needed = graph.getLastPowerNeeded();
+   this.surplus = produced - needed;   // 正值代表盈余
+   
+   if (this.surplus > 0.001) {
+    // 每秒恢复 10 生命值
+    this.health = Math.min(this.block.health, this.health + 40/60);
+    if (Mathf.chanceDelta(0.1) && this.health < this.block.health) { // 每帧 10% 几率，约 6次/秒（60帧）
+     particle.at(this.x, this.y);
+    }
+   }
+  },
+  draw() {
+   const tile = this.tile;
+   if (!tile) return;
+   const floor = tile.floor();
+   Draw.z(Layer.floor + 0.01);
+   if (floor != null && floor.isLiquid) {
+    Draw.rect(Core.atlas.find(this.block.name + "-bottom"), this.x, this.y,);
+   }
+   Draw.reset(),
+    Draw.z(Layer.block);
+   if (this.surplus > 0.001 && this.health < this.block.health) { // 每帧 10% 几率，约 6次/秒（60帧）
+    Draw.rect(Core.atlas.find(this.block.name + "-fix"), this.x, this.y,);
+   }
+   else {
+    Draw.rect(Core.atlas.find(this.block.name + "-unfix"), this.x, this.y,);
+   }
+   this.super$draw()
+  }
+ })
+
+
+
+
+
+
+
+
 const steamPressurizer = new ThermalGenerator("steam-pressurizer");
 exports.steamPressurizer = steamPressurizer;
 Object.assign(steamPressurizer, {
@@ -38,7 +127,7 @@ Object.assign(steamPressurizer, {
   Items.silicon, 20,
  )
 })
-
+/*
 const turbineSet = new ImpactReactor("turbine-set");
 exports.turbineSet = turbineSet;
 Object.assign(turbineSet, {
@@ -126,7 +215,7 @@ Object.assign(steamHeater, {
  )
 })
 steamHeater.consumeLiquid(fluids.steam, 0.3)
-
+*/
 //energy-capacitor energyCapacitor
 const energyCapacitor = new Battery("energy-capacitor");
 exports.energyCapacitor = energyCapacitor;
@@ -303,6 +392,56 @@ Object.assign(chemoRingEngine, {
 chemoRingEngine.consumeLiquid(Liquids.oil, 0.7,)
 chemoRingEngine.consumePower(4)
 //chemoRingEngine.consumeItem(Items.graphite, 1)
+
+
+//gaseous-fission-reactor gaseousFissionReactor
+const gaseousFissionReactor = new ConsumeGenerator("gaseous-fission-reactor");
+exports.gaseousFissionReactor = gaseousFissionReactor;
+Object.assign(gaseousFissionReactor, {
+ powerProduction: 4500 / 60,
+ itemDuration: 3 * 60,
+ health: 1400,
+ hasLiquids: true,
+ size: 3,
+ generateEffect: Fx.none,
+ //generateEffectRange: 3.0,
+ // outputLiquid: new LiquidStack(Liquids.cyanogen, 1 / 120),
+ //outputItem: new ItemStack(Items.pyratite, 1),
+ canOverdrive: false,
+ ambientSound: Vars.tree.loadSound("ray1"),
+ ambientSoundVolume: 0.28,
+ liquidCapacity: 100,
+ itemCapacity: 20,
+ buildTime: 200,
+ drawer: new DrawMulti(
+  new DrawRegion("-bottom"),
+  Object.assign(new DrawLiquidTile(Liquids.water), {
+  }),
+  Object.assign(new DrawArcSmelt(), {
+   midColor: Color.valueOf("#B18AFFFF"),
+   flameColor: Color.valueOf("#D3BDFFFF"),
+   circleSpace: 4,
+   flameRad: 3,
+   flameRadiusScl: 3,
+   flameRadiusMag: 0.4,
+   particleRad: 6,
+   particles: 30,
+  }),
+  new DrawDefault(),
+ ),
+ category: Category.power,
+ buildVisibility: BuildVisibility.shown,
+ requirements: ItemStack.with(
+  Items.titanium, 400,
+  Items.thorium, 300,
+  Items.lead, 200,
+  Items.silicon, 200,
+  Items.metaglass, 150,
+ ),
+})
+gaseousFissionReactor.consumeLiquid(Liquids.water, 48 / 60,)
+gaseousFissionReactor.consumeItems(ItemStack.with(Items.thorium, 1))
+
 //光伏单元
 const photovoltaicModule = new SolarGenerator("photovoltaic-module");
 exports.photovoltaicModule = photovoltaicModule;

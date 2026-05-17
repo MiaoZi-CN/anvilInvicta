@@ -69,21 +69,21 @@ fluxRail.buildType = () =>
    }//类似我的世界的贴图，分为横竖两种情况，就像木头一样是不是很聪明？喂，你们这些美术设计师是不是觉得分两种情况更好看啊？（虽然我也觉得分两种情况更好看，美术设计也是我）
 
    Draw.z(lastZ - 0.09);
-    if (item != null) {
-         const itemSize = 4;
+   if (item != null) {
+    const itemSize = 4;
     const padding = itemSize;
-     const dir = Geometry.d4[Mathf.mod(rotation, 4)];//根据旋转方向获取单位向量
-     const offset = Tmp.v1.set(dir.x, dir.y).scl(block.size * Vars.tilesize / 2)
-      .add(padding * dir.x, padding * dir.y).scl(Mathf.clamp(progress) - 0.5);
-     // 变化的alpha值
-     let alpha = 0.6 + Mathf.sin(Time.globalTime * 0.3) * 0.2;
-     // 设置颜色时使用这个alpha值
-     //    Draw.color(255, 255, 255, alpha); 丢掉使用颜色
-     Draw.alpha(alpha);
-     //     Drawf.light(this.x, this.y, 40, Pal.accent, 1.0);
-     Draw.rect(item.fullIcon, x + offset.x, y + offset.y, itemSize, itemSize);
-     Draw.reset();
-    }
+    const dir = Geometry.d4[Mathf.mod(rotation, 4)];//根据旋转方向获取单位向量
+    const offset = Tmp.v1.set(dir.x, dir.y).scl(block.size * Vars.tilesize / 2)
+     .add(padding * dir.x, padding * dir.y).scl(Mathf.clamp(progress) - 0.5);
+    // 变化的alpha值
+    let alpha = 0.6 + Mathf.sin(Time.globalTime * 0.3) * 0.2;
+    // 设置颜色时使用这个alpha值
+    //    Draw.color(255, 255, 255, alpha); 丢掉使用颜色
+    Draw.alpha(alpha);
+    //     Drawf.light(this.x, this.y, 40, Pal.accent, 1.0);
+    Draw.rect(item.fullIcon, x + offset.x, y + offset.y, itemSize, itemSize);
+    Draw.reset();
+   }
 
    //头疼的绘制
    // 水平方向 (左=2, 下=3) 使用 cap2 作为前端，cap1 作为后端
@@ -153,7 +153,33 @@ fluxRail.buildType = () =>
  });
 exports.fluxRail = fluxRail;
 
+const fluxRailJunction = extend(Junction, "flux-rail-junction", {//光速轨，很帅！
+ squareSprite: false,
+ health: 100,
+ speed: 60 / 40,
+ displayedSpeed: 30,
+ capacity: 2,
+ buildCostMultiplier: 4,
+ buildVisibility: BuildVisibility.shown,
+ category: Category.distribution,
+ placeableLiquid: true,
+ hasPower: true,
+ hasItems: true,
+ consumesPower: false,
+ outputsPower: true,
+ conductivePower: true,
 
+ requirements: ItemStack.with(
+  Items.silicon, 10,
+  Items.graphite, 10,
+ ),
+
+ loadIcon() {//获取图标
+  this.super$loadIcon();
+  this.fullIcon = this.uiIcon = Core.atlas.find(this.name + "-full");
+ },
+})
+/*
 const fluxRailJunction = new Junction("flux-rail-junction");
 exports.fluxRailJunction = fluxRailJunction;
 Object.assign(fluxRailJunction, {
@@ -175,7 +201,23 @@ Object.assign(fluxRailJunction, {
   Items.silicon, 10,
   Items.graphite, 10,
  )
-})
+})*/
+
+fluxRailJunction.buildType = () => extend(Junction.JunctionBuild, fluxRailJunction, {
+ draw() {
+  //  this.super$draw();
+  const { block, x, y, team } = this;
+  Draw.rect(Core.atlas.find(block.name), x, y,);
+  Draw.reset();
+  // 变化的alpha值
+  let alpha = 0.6 + Mathf.sin(Time.globalTime * 0.4) * 0.2;
+  // 设置颜色时使用这个alpha值
+  Draw.color(team.color.r, team.color.g, team.color.b, alpha);
+  Drawf.light(x, y, 40, team.color, 1.0);
+  Draw.rect(Core.atlas.find(block.name + "-top"), x, y);
+
+ }
+});
 
 global.Filter = function (name) {
  var m = Object.assign(extend(GenericCrafter, name, {
@@ -275,7 +317,7 @@ stackBridge.buildType = prov(() => {
  var amount = 0;
 
  const block = stackBridge;
-//可以用extend来重写buildType
+ //可以用extend来重写buildType
  return new JavaAdapter(BufferedItemBridge.BufferedItemBridgeBuild, {
   setLastItem(v) {
    lastItem = v;
@@ -392,7 +434,7 @@ routerKing.buildType = () =>
    Drawf.light(this.x, this.y, 40, teamColor, 1.0);
    Draw.rect(Core.atlas.find(this.block.name), x, y,);
 
-   if(lastItem != null){Draw.rect(lastItem.fullIcon, x, y, 16, 16, Time.globalTime * 6);}
+   if (lastItem != null) { Draw.rect(lastItem.fullIcon, x, y, 16, 16, Time.globalTime * 6); }
   },
   update() {
    this.super$update();

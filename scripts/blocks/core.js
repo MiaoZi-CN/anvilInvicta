@@ -23,7 +23,7 @@ Object.assign(arouse, {
  faceTarget: true,
  itemCapacity: 50,
  buildSpeed: 3,
- outlines:false
+ outlines: false
 })
 arouse.weapons.add(
  Object.assign(new BuildWeapon("arouse-build-weapon"), {
@@ -57,6 +57,10 @@ const prismCore = extend(CoreBlock, 'prism-core'/*方块名*/, {
    prov(() => Pal.powerBar),
    floatp(() => e.getPowerProduction() / powerProduction)))
   );
+ },
+  loadIcon() {//获取图标
+  this.super$loadIcon();
+  this.fullIcon = this.uiIcon = Core.atlas.find(this.name + "-full");
  },/*
  canPlaceOn(tile, team, rotation) {
   return true;
@@ -87,3 +91,24 @@ prismCore.buildType = () => {
   },
  });
 }
+//opto-spike-radar 
+
+const optoSpikeRadar = extend(Radar, 'opto-spike-radar'/*方块名*/, {
+ discoveryTime: 3 * 60,
+ fogRadius:15,
+ category: Category.effect,
+ buildVisibility: BuildVisibility.shown,
+ requirements: ItemStack.with(
+  Items.titanium, 15,
+  Items.silicon, 10,
+ ),
+})
+
+
+/*
+optoSpikeRadar.buildType = () =>
+ extend(Radar.Radaruild, optoSpikeRadar, {
+  updateTile() {
+  
+  }
+ })原本打算写debuff场相关的 光电桩没到那个地步先扔着*/

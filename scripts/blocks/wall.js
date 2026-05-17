@@ -24,9 +24,9 @@ Object.assign(armorBlock, {
 //titaniumReactionWall 钛合成墙
 const titaniumReactionWall = extend(Wall, "titanium-reaction-wall", {
  size: 1,
- health: 340,
+ health: 350,
  flashHit: true,
- buildTime: 1.5,
+ buildTime: 2,
  category: Category.defense,
  buildVisibility: BuildVisibility.shown,
  requirements: ItemStack.with(
@@ -82,7 +82,7 @@ const adamantaneWall = extend(Wall, "adamantane-wall", {
   this.super$setStats();
   this.stats.add(maxArmorMultiplier, "5");
   this.stats.add(maxHealthMultiplier, "5");
- },
+ },/*
  drawPlace(x, y, rotation, valid) {//放置计划时的预览
   this.super$drawPlace(x, y, rotation, valid);
   Draw.color(Color.valueOf('#ffd37f'));
@@ -90,7 +90,7 @@ const adamantaneWall = extend(Wall, "adamantane-wall", {
   Draw.z(Layer.block);
   Lines.stroke(2);
   Lines.poly(x * 8, y * 8, 4, 10, 45);
- },
+ },*/
 });
 //const adamantaneWall = new Wall("adamantane-wall");
 

@@ -1,9 +1,34 @@
+
+
+const titaniumDrill = extend(Drill, "titanium-drill", {
+ size: 2,
+ scaledHealth: 200,
+ armor: 2,
+ tier: 3,
+ buildTime: 25,
+ drillTime: 360,
+ hasLiquids: true,
+ category: Category.production,
+ buildVisibility: BuildVisibility.sandboxOnly,
+ requirements: ItemStack.with(
+  Items.copper, 16,
+  Items.graphite, 12,
+  Items.titanium, 18,
+ ),
+});//titanium-drill
+
+
+
+
+
+
+
 const resonantDrill = extend(Drill, "resonant-drill", {
  size: 2,
- scaledHealth: 50,
+ scaledHealth: 70,
  armor: 0,
  tier: 3,
- buildCostMultiplier: 0.8,
+ buildTime: 12,
  drillTime: 350 / 2.56,
  liquidBoostIntensity: 1,
  hardnessDrillMultiplier: 0,
@@ -11,7 +36,7 @@ const resonantDrill = extend(Drill, "resonant-drill", {
  category: Category.production,
  buildVisibility: BuildVisibility.shown,
  requirements: ItemStack.with(
-  Items.titanium, 20,
+  Items.titanium, 25,
  ),
  loadIcon() {//获取图标
   this.super$loadIcon();
@@ -79,7 +104,7 @@ const drill = extend(Drill, "fast-drill", {
  }
 });
 
-drill.setupRequirements(Category.production, ItemStack.with(Items.titanium, 40, Items.silicon, 40))
+drill.setupRequirements(Category.production, ItemStack.with(Items.titanium, 50, Items.silicon, 50))
 drill.consume(multiEfficientCoolant).boost();//使用多液体效率的消耗
 drill.consumePower(4.5);
 drill.buildType = () => extend(Drill.DrillBuild, drill, {
